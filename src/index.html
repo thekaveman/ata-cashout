@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en" ng-app="ataHoursCalc">
+  <head>
+    <meta charset="utf-8" />
+
+    <!-- build:css:dist css/vendor.min.css -->
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css" />
+    <!-- /build -->
+
+    <!-- build:css:dist css/app.min.css -->
+    <link rel="stylesheet" href="css/app.css" />
+    <!-- /build -->
+
+    <!-- build:js:dist js/vendor.min.js -->
+    <script src="../node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="../node_modules/angular/angular.min.js"></script>
+    <script src="../node_modules/angular-route/angular-route.min.js"></script>
+    <script src="../node_modules/angular-resource/angular-resource.min.js"></script>
+    <script src="../node_modules/angular-sanitize/angular-sanitize.min.js"></script>
+    <!-- /build -->
+
+    <!-- build:js:dist js/app.min.js -->
+    <script src="js/filters.js"></script>
+    <script src="js/directives.js"></script>
+    <script src="js/services.js"></script>
+    <script src="js/controllers.js"></script>
+    <script src="js/app.js"></script>
+    <!-- /build -->
+  </head>
+  <body>
+    <div class="view-container">
+      <div class="view-frame container-fluid" ng-view></div>
+    </div>
+  </body>
+</html>

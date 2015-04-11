@@ -2,7 +2,7 @@
   "use strict";
 
   angular
-    .module("ataHoursCalc", [
+    .module("ataCashout", [
       "ngRoute",
       "ngSanitize"
     ]);

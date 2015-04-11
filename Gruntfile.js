@@ -4,36 +4,36 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON("package.json"),
     //clean up partial build results
     clean: {
-      bin: ["bin/js/*.js", "!bin/js/*.min.js", "bin/css/*.css", "!bin/css/*.min.css"]
+      dist: ["dist/js/*.js", "!dist/js/*.min.js", "dist/css/*.css", "!dist/css/*.min.css"]
     },
     //concatenate javascript files
     concat: {
-      bin: {
+      dist: {
         files: [
           {
             src: [
-              "node_modules/bootstrap/bin/css/bootstrap.min.css"
+              "node_modules/bootstrap/dist/css/bootstrap.min.css"
             ],
-            dest: "bin/css/vendor.min.css"
+            dest: "dist/css/vendor.min.css"
           },
           {
             src: [
               "src/css/app.css"
             ],
-            dest: "bin/css/app.min.css"
+            dest: "dist/css/app.min.css"
           },
           {
             src: [
-              "node_modules/jquery/bin/jquery.min.js",
-              "node_modules/bootstrap/bin/js/bootstrap.min.js",
+              "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/bootstrap/dist/js/bootstrap.min.js",
               "node_modules/angular/angular.min.js",
               "node_modules/angular-*/angular-*.min.js",
             ],
-            dest: "bin/js/vendor.min.js"
+            dest: "dist/js/vendor.min.js"
           },
           {
             src: "src/js/*.js",
-            dest: "bin/js/app.js"
+            dest: "dist/js/app.js"
           }
         ]
       }
@@ -42,32 +42,32 @@ module.exports = function(grunt) {
     copy: {
       fonts: {
         expand: true,
-        cwd: "node_modules/bootstrap/bin/fonts/",
+        cwd: "node_modules/bootstrap/dist/fonts/",
         src: "*.*",
-        dest: "bin/fonts/"
+        dest: "dist/fonts/"
       },
       partials: {
         expand: true,
         cwd: "src/partials",
         src: "*.html",
-        dest: "bin/partials/"
+        dest: "dist/partials/"
       }
     },
     //post-process HTML
     processhtml: {
-      bin: {
+      dist: {
         files: {
-          "bin/index.html": "src/index.html"
+          "dist/index.html": "src/index.html"
         }
       }
     },
     //minify javascript files
     uglify: {
-      bin: {
+      dist: {
         files: [
           {
-            src: "bin/js/app.js",
-            dest: "bin/js/app.min.js"
+            src: "dist/js/app.js",
+            dest: "dist/js/app.min.js"
           }
         ]
       }

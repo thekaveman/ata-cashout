@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" ng-app="ataCashout">
+<html lang="en" ng-app="ataCashout" ng-strict-di>
   <head>
     <meta charset="utf-8" />
 
@@ -21,16 +21,18 @@
     <!-- /build -->
 
     <!-- build:js:dist js/app.min.js -->
+    <script src="js/app.js"></script>
     <script src="js/filters.js"></script>
     <script src="js/directives.js"></script>
     <script src="js/services.js"></script>
     <script src="js/controllers.js"></script>
-    <script src="js/app.js"></script>
     <!-- /build -->
   </head>
   <body>
-    <div class="view-container">
-      <div class="view-frame container-fluid" ng-view></div>
+    <div class="container-fluid">
+      <h1>ATA Cashout Calculator</h1>
+      <p>Use this calculator to determine how best to use and save your accrued leave time.</p>
+      <ng-include src="'partials/calculator.html'"></ng-include>
     </div>
   </body>
 </html>

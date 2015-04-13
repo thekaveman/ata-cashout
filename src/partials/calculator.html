@@ -1,0 +1,11 @@
+<div class="row">
+  <div class="col-md-4" ng-controller="CalculatorController">
+    <ng-include src="'partials/job-pane.html'"></ng-include>
+    <ng-include src="'partials/accruals-pane.html'"></ng-include>
+    <button class="btn btn-success" ng-click="calculate()">Go</button>
+    <button class="btn btn-danger" ng-click="reset()">Reset</button>
+  </div>
+  <div class="col-md-8" ng-if="result.ready">
+    <ng-include src="'partials/results.html'"></ng-include>
+  </div>
+</div>

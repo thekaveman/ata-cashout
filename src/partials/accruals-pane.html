@@ -27,10 +27,23 @@
       </div>
       <div class="form-group">
         <label>Sick</label>
-        <div class="input-group">
-          <input type="text" class="form-control" placeholder="" ng-model="member.accruals.sick">
-          <div class="input-group-addon">hours</div>
+        <div class="row">
+          <div class="col-xs-6">
+            <label>Used this fiscal year</label>
+            <div class="input-group">
+              <input type="text" class="form-control" placeholder="" ng-model="member.used.sick">
+              <div class="input-group-addon">hours</div>
+            </div>
+          </div>
+          <div class="col-xs-6">
+            <label>In bank</label>
+            <div class="input-group">
+              <input type="text" class="form-control" placeholder="" ng-model="member.accruals.sick">
+              <div class="input-group-addon">hours</div>
+            </div>
+          </div>
         </div>
+        
       </div>
       <div class="form-group">
         <label>Vacation</label>

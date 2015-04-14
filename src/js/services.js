@@ -2,14 +2,15 @@
   "use strict";
 
   var app = angular.module("ataCashout");
-  
+
   app
     .value("HoursInDay", 8);
 
   app
     .factory("DayHours", ["HoursInDay", DayHoursFactory])
     .factory("SickCashoutRules", SickCashoutRules)
-    .factory("SickCashout", ["DayHours", "SickCashoutRules", SickCashoutFactory]);
+    .factory("SickCashout", ["DayHours", "SickCashoutRules", SickCashoutFactory])
+    .factory("VacationCashout", ["DayHours", VacationCashoutFactory]);
 
   function DayHoursFactory(hoursInDay) {
     return {
@@ -70,6 +71,21 @@
         return dayHours.toHours(cashableDays);
       }
       return 0;
+    }
+  }
+
+  function VacationCashoutFactory(dayHours) {
+    return {
+      evaluate: evaluate
+    };
+
+    function evaluate(member) {
+      var cashable = dayHours.toHours(dayHours.toWholeDays(member.accruals.vacation));
+      return {
+        accrued: member.accruals.vacation,
+        cashable: cashable,
+        diff: member.accruals.vacation - cashable
+      };
     }
   }
 })();

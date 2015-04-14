@@ -86,3 +86,27 @@ describe("SickCashout", function() {
     expect(result.diff).toBe(4);
   });
 });
+
+describe("VacationCashout", function() {
+  var vacationCashout, member;
+
+  beforeEach(inject(function(VacationCashout) {
+    vacationCashout = VacationCashout;
+    member = {
+        accruals: { vacation: 5 }
+    };
+  }));
+
+  it("should take member's accruals on evaluation", function() {
+    var result = vacationCashout.evaluate(member);
+    expect(result.accrued).toBe(5);
+  });
+
+  it("should evaluate in whole increments of hoursInDay", function() {
+    var result = vacationCashout.evaluate(member);
+    expect(result.cashable).toBe(4);
+    expect(result.diff).toBe(1);
+  });
+});
+
+

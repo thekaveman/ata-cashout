@@ -7,7 +7,23 @@
     .value("HoursInDay", 8);
 
   app
+    .factory("DayHours", ["HoursInDay", DayHoursFactory])
     .factory("SickCashoutRules", SickCashoutRules);
+
+  function DayHoursFactory(hoursInDay) {
+    return {
+      toWholeDays: toWholeDays,
+      toHours: toHours
+    };
+
+    function toWholeDays(hours) {
+      return Math.floor(hours / hoursInDay);
+    }
+
+    function toHours(days) {
+      return days * hoursInDay;
+    }
+  }
 
   function SickCashoutRules() {
     return [{

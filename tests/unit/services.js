@@ -125,3 +125,39 @@ describe("VacationCashout", function() {
     expect(result.diff).toBe(1);
   });
 });
+
+describe("HolidayCashout", function() {
+  var holidayCashout, member;
+
+  beforeEach(inject(function(HolidayCashout) {
+    holidayCashout = HolidayCashout;
+  }));
+
+  it("should take member's accruals on evaluation", function() {
+    var member = {
+      accruals: { holiday: 7 }
+    };
+
+    var result = holidayCashout.evaluate(member);
+    expect(result.accrued).toBe(7);
+  });
+
+  it("should evaluate accrual amount as cashable when < 8", function() {
+    var member = {
+      accruals: { holiday: 5 }
+    };
+
+    var result = holidayCashout.evaluate(member);
+    expect(result.cashable).toBe(5);
+  });
+
+  it("should evaluate 8 as cashable when accrual amount >= 8", function() {
+    var member = {
+      accruals: { holiday: 10 }
+    };
+
+    var result = holidayCashout.evaluate(member);
+    expect(result.cashable).toBe(8);
+    expect(result.diff).toBe(2);
+  });
+});

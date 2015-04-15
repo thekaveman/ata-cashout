@@ -8,7 +8,8 @@
     .factory("DayHours", ["HoursInDay", DayHoursFactory])
     .factory("SickCashoutAmounts", SickCashoutAmounts)
     .factory("SickCashout", ["DayHours", "SickCashoutAmounts", SickCashoutFactory])
-    .factory("VacationCashout", ["DayHours", VacationCashoutFactory]);
+    .factory("VacationCashout", ["DayHours", VacationCashoutFactory])
+    .factory("HolidayCashout", ["DayHours", HolidayCashoutFactory]);
 
   function DayHoursFactory(hoursInDay) {
     return {
@@ -83,6 +84,23 @@
         accrued: member.accruals.vacation,
         cashable: cashable,
         diff: member.accruals.vacation - cashable
+      };
+    }
+  }
+
+  function HolidayCashoutFactory(dayHours) {
+    return {
+      evaluate: evaluate
+    };
+
+    function evaluate(member) {
+      var cashable = member.accruals.holiday < 8
+                   ? member.accruals.holiday
+                   : 8;
+      return {
+        accrued: member.accruals.holiday,
+        cashable: cashable,
+        diff: member.accruals.holiday - cashable
       };
     }
   }

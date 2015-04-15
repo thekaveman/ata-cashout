@@ -2,9 +2,6 @@
   "use strict";
 
   angular
-    .module("ataCashout", [
-      "ngRoute",
-      "ngSanitize"
-    ]);
+    .module("ataCashout", []);
 
 })();

@@ -4,12 +4,10 @@
   var app = angular.module("ataCashout");
 
   app
-    .value("HoursInDay", 8);
-
-  app
+    .value("HoursInDay", 8)
     .factory("DayHours", ["HoursInDay", DayHoursFactory])
-    .factory("SickCashoutRules", SickCashoutRules)
-    .factory("SickCashout", ["DayHours", "SickCashoutRules", SickCashoutFactory])
+    .factory("SickCashoutAmounts", SickCashoutAmounts)
+    .factory("SickCashout", ["DayHours", "SickCashoutAmounts", SickCashoutFactory])
     .factory("VacationCashout", ["DayHours", VacationCashoutFactory]);
 
   function DayHoursFactory(hoursInDay) {
@@ -27,7 +25,7 @@
     }
   }
 
-  function SickCashoutRules() {
+  function SickCashoutAmounts() {
     return [{
       minYears: 0,
       maxYears: 9,
@@ -39,13 +37,13 @@
    }];
   }
 
-  function SickCashoutFactory(dayHours, rules) {
+  function SickCashoutFactory(dayHours, amounts) {
     return {
       evaluate: evaluate
     };
 
     function evaluate(member) {
-      var cashable = getCashableHours(member.serviceYears, member.used.sick);
+      var cashable = member.accruals.sick < 12 ? 0 : getCashableHours(member.serviceYears, member.used.sick);
       return {
         accrued: member.accruals.sick,
         cashable: cashable,
@@ -55,19 +53,19 @@
 
     function getCashableHours(serviceYears, usedHours) {
       var cashable = 0;
-      for (var i = 0; i < rules.length; i++) {
-        if(rules[i].minYears <= serviceYears && serviceYears <= rules[i].maxYears) {
-          cashable = evaluateRuleMap(rules[i].usedToCashableDays, usedHours);
+      for (var i = 0; i < amounts.length; i++) {
+        if(amounts[i].minYears <= serviceYears && serviceYears <= amounts[i].maxYears) {
+          cashable = findAmount(amounts[i].usedToCashableDays, usedHours);
           break;
         }
       }
       return cashable;
     }
 
-    function evaluateRuleMap(ruleMap, usedHours) {
+    function findAmount(amounts, usedHours) {
       var usedDays = dayHours.toWholeDays(usedHours);
-      if (usedDays < ruleMap.length) {
-        var cashableDays = ruleMap[usedDays];
+      if (usedDays < amounts.length) {
+        var cashableDays = amounts[usedDays];
         return dayHours.toHours(cashableDays);
       }
       return 0;

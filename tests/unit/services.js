@@ -28,62 +28,79 @@ describe("DayHours", function() {
 describe("SickCashout", function() {
   var sickCashout, member;
 
-  beforeEach(function() {
+  it("should evaluate to 0 cashable when member has less than 12 hours banked", function() {
+    inject(function(SickCashout) {
+      sickCashout = SickCashout;
+    });
+
     member = {
         accruals: { sick: 10 },
         serviceYears: 1,
         used: { sick: 0 },
     };
-  });
-
-  it("should take member's accruals on evaluation", function() {
-    inject(function(SickCashout) {
-      sickCashout = SickCashout;
-    });
-
-    var result = sickCashout.evaluate(member);
-    expect(result.accrued).toBe(10);
-  });
-
-  it("should evaluate to 0 cashable when no rule matches", function() {
-    module(function($provide) {
-      $provide.value("SickCashoutRules", [{
-        minYears: Number.MAX_VALUE,
-        maxYears: Number.MIN_VALUE,
-        usedToCashableDays: []
-      }]);
-    });
-
-    inject(function(SickCashout) {
-      sickCashout = SickCashout;
-    });
 
     var result = sickCashout.evaluate(member);
     expect(result.cashable).toBe(0);
   });
 
-  it("should evaluate using first matching rule", function() {
-    module(function($provide) {
-      $provide.value("SickCashoutRules", [
-      {
-        minYears: Number.MIN_VALUE,
-        maxYears: Number.MAX_VALUE,
-        usedToCashableDays: [3,3,3]
-      },
-      {
-        minYears: Number.MIN_VALUE,
-        maxYears: Number.MAX_VALUE,
-        usedToCashableDays: [5,5,5]
-      }]);
+  describe("member has at least 12 hours banked", function() {
+    beforeEach(function() {
+    member = {
+        accruals: { sick: 15 },
+        serviceYears: 1,
+        used: { sick: 0 },
+    };
+  });
+
+    it("should take member's accruals on evaluation", function() {
+      inject(function(SickCashout) {
+        sickCashout = SickCashout;
+      });
+
+      var result = sickCashout.evaluate(member);
+      expect(result.accrued).toBe(15);
     });
 
-    inject(function(SickCashout) {
-      sickCashout = SickCashout;
+    it("should evaluate to 0 cashable when no amount matches", function() {
+      module(function($provide) {
+        $provide.value("SickCashoutAmounts", [{
+          minYears: Number.MAX_VALUE,
+          maxYears: Number.MIN_VALUE,
+          usedToCashableDays: []
+        }]);
+      });
+
+      inject(function(SickCashout) {
+        sickCashout = SickCashout;
+      });
+
+      var result = sickCashout.evaluate(member);
+      expect(result.cashable).toBe(0);
     });
 
-    var result = sickCashout.evaluate(member);
-    expect(result.cashable).toBe(6);
-    expect(result.diff).toBe(4);
+    it("should evaluate using first matching amount", function() {
+      module(function($provide) {
+        $provide.value("SickCashoutAmounts", [
+        {
+          minYears: Number.MIN_VALUE,
+          maxYears: Number.MAX_VALUE,
+          usedToCashableDays: [3,3,3]
+        },
+        {
+          minYears: Number.MIN_VALUE,
+          maxYears: Number.MAX_VALUE,
+          usedToCashableDays: [5,5,5]
+        }]);
+      });
+
+      inject(function(SickCashout) {
+        sickCashout = SickCashout;
+      });
+
+      var result = sickCashout.evaluate(member);
+      expect(result.cashable).toBe(6);
+      expect(result.diff).toBe(9);
+    });
   });
 });
 
@@ -108,5 +125,3 @@ describe("VacationCashout", function() {
     expect(result.diff).toBe(1);
   });
 });
-
-

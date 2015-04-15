@@ -53,7 +53,7 @@ describe("SickCashout", function() {
     };
   });
 
-    it("should take member's accruals on evaluation", function() {
+    it("should return member's accruals on evaluation", function() {
       inject(function(SickCashout) {
         sickCashout = SickCashout;
       });
@@ -64,11 +64,7 @@ describe("SickCashout", function() {
 
     it("should evaluate to 0 cashable when no amount matches", function() {
       module(function($provide) {
-        $provide.value("SickCashoutAmounts", [{
-          minYears: Number.MAX_VALUE,
-          maxYears: Number.MIN_VALUE,
-          usedToCashableDays: []
-        }]);
+        provideImpossibleAmounts($provide, "SickCashoutAmounts");
       });
 
       inject(function(SickCashout) {
@@ -81,17 +77,7 @@ describe("SickCashout", function() {
 
     it("should evaluate using first matching amount", function() {
       module(function($provide) {
-        $provide.value("SickCashoutAmounts", [
-        {
-          minYears: Number.MIN_VALUE,
-          maxYears: Number.MAX_VALUE,
-          usedToCashableDays: [3,3,3]
-        },
-        {
-          minYears: Number.MIN_VALUE,
-          maxYears: Number.MAX_VALUE,
-          usedToCashableDays: [5,5,5]
-        }]);
+        provideTwoMatchingAmounts($provide, "SickCashoutAmounts");
       });
 
       inject(function(SickCashout) {
@@ -111,11 +97,11 @@ describe("VacationCashout", function() {
   beforeEach(inject(function(VacationCashout) {
     vacationCashout = VacationCashout;
     member = {
-        accruals: { vacation: 5 }
+      accruals: { vacation: 5 }
     };
   }));
 
-  it("should take member's accruals on evaluation", function() {
+  it("should return member's accruals on evaluation", function() {
     var result = vacationCashout.evaluate(member);
     expect(result.accrued).toBe(5);
   });
@@ -134,7 +120,7 @@ describe("HolidayCashout", function() {
     holidayCashout = HolidayCashout;
   }));
 
-  it("should take member's accruals on evaluation", function() {
+  it("should return member's accruals on evaluation", function() {
     var member = {
       accruals: { holiday: 7 }
     };
@@ -162,3 +148,54 @@ describe("HolidayCashout", function() {
     expect(result.diff).toBe(2);
   }));
 });
+
+describe("PersonalCashout", function() {
+  var member;
+
+  beforeEach(function() {
+    member = {
+      accruals: { personal: 7, personalBank: 10 }
+    };
+  });
+
+  it("should return member's accruals on evaluation", inject(function(PersonalCashout) {
+    var result = PersonalCashout.evaluate(member);
+    expect(result.accrued.personal).toBe(7);
+    expect(result.accrued.personalBank).toBe(10);
+  }));
+
+  it("should evaluate to 0 cashable when no amount matches", function() {
+    module(function($provide) {
+      provideImpossibleAmounts($provide, "PersonalCashoutAmounts");
+    });
+
+    inject(function(PersonalCashout) {
+      var result = PersonalCashout.evaluate(member);
+      expect(result.cashable).toBe(0);
+    })
+  });
+});
+
+function provideImpossibleAmounts($provide, amountName) {
+  $provide
+    .value(amountName, [{
+        minYears: Number.MAX_VALUE,
+        maxYears: Number.MIN_VALUE,
+        amounts: []
+    }]);
+};
+
+function provideTwoMatchingAmounts($provide, amountName){
+  $provide.value(
+    amountName,
+    [{
+      minYears: Number.MIN_VALUE,
+      maxYears: Number.MAX_VALUE,
+      amounts: [3,3,3]
+    },{
+      minYears: Number.MIN_VALUE,
+      maxYears: Number.MAX_VALUE,
+      amounts: [5,5,5]
+    }]
+  );
+};

@@ -1,16 +1,17 @@
 (function () {
   "use strict";
 
-  var app = angular.module("ataCashout");
-
-  app
+  angular
+    .module("ataCashout")
     .value("HoursInDay", 8)
     .value("CashableHolidayHours", 8)
     .factory("DayHours", ["HoursInDay", DayHoursFactory])
     .factory("SickCashoutAmounts", SickCashoutAmounts)
+    .factory("PersonalCashoutAmounts", ["DayHours", PersonalCashoutAmounts])
     .factory("SickCashout", ["DayHours", "SickCashoutAmounts", SickCashoutFactory])
     .factory("VacationCashout", ["DayHours", VacationCashoutFactory])
-    .factory("HolidayCashout", ["DayHours", "CashableHolidayHours", HolidayCashoutFactory]);
+    .factory("HolidayCashout", ["CashableHolidayHours", HolidayCashoutFactory])
+    .factory("PersonalCashout", ["PersonalCashoutAmounts", PersonalCashoutFactory]);
 
   function DayHoursFactory(hoursInDay) {
     return {
@@ -31,11 +32,11 @@
     return [{
       minYears: 0,
       maxYears: 9,
-      usedToCashableDays: [6,6,6,5,4,3,2,1]
+      amounts: [6,6,6,5,4,3,2,1]
     },{
       minYears: 10,
       maxYears: Number.MAX_VALUE,
-      usedToCashableDays: [12,12,12,11,10,9,8,7,6,5,4,3,2,1]
+      amounts: [12,12,12,11,10,9,8,7,6,5,4,3,2,1]
    }];
   }
 
@@ -57,7 +58,7 @@
       var cashable = 0;
       for (var i = 0; i < amounts.length; i++) {
         if(amounts[i].minYears <= serviceYears && serviceYears <= amounts[i].maxYears) {
-          cashable = findAmount(amounts[i].usedToCashableDays, usedHours);
+          cashable = findAmount(amounts[i].amounts, usedHours);
           break;
         }
       }
@@ -89,7 +90,7 @@
     }
   }
 
-  function HolidayCashoutFactory(dayHours, cashableHolidayHours) {
+  function HolidayCashoutFactory(cashableHolidayHours) {
     return {
       evaluate: evaluate
     };
@@ -103,6 +104,63 @@
         cashable: cashable,
         diff: member.accruals.holiday - cashable
       };
+    }
+  }
+
+  function PersonalCashoutAmounts(dayHours) {
+    var base = {
+      cashable: dayHours.toHours(5),
+      carryover: dayHours.toHours(3),
+      noncashable: dayHours.toHours(4 + 2)
+    };
+
+    return [{
+      minYears: 0,
+      maxYears: 14,
+      amounts: base
+    },{
+      minYears: 15,
+      maxYears: Number.MAX_VALUE,
+      amounts: angular.extend({}, base, { cashable: base.cashable + 8 })
+    }];
+  }
+
+  function PersonalCashoutFactory(amounts) {
+    return {
+      evaluate: evaluate
+    };
+
+    function evaluate(member) {
+      var amounts = getAmounts(member);
+      return {
+        accrued: {
+          personal: member.accruals.personal,
+          personalBank: member.accruals.personalBank
+        },
+        carryover: amounts.carryover || 0,
+        cashable: amounts.cashable || 0,
+        diff: computeDiff(member.accruals.personal, member.accruals.personalBank, amounts.cashable)
+      };
+    }
+
+    function getAmounts(serviceYears) {
+      var result = {};
+      for(var i = 0; i < amounts.length; i++) {
+        if(amounts[i].minYears <= serviceYears && serviceYears <= amounts[i].maxYears){
+          result = amounts[i];
+          break;
+        }
+      }
+      return result;
+    }
+
+    function computeDiff(personal, personalBank, cashable) {
+      var moreCashable = personal < cashable;
+      return {
+          personal: moreCashable ? 0 : personal - cashable,
+          personalBank: moreCashable ? (personal + personalBank) - cashable
+                                     : personalBank
+        };
     }
   }
 })();

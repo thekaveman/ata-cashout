@@ -2,6 +2,7 @@
 
 beforeEach(module("ataCashout", function($provide) {
   $provide.value("HoursInDay", 2);
+  $provide.value("CashableHolidayHours", 2);
 }));
 
 describe("DayHours", function() {
@@ -142,22 +143,22 @@ describe("HolidayCashout", function() {
     expect(result.accrued).toBe(7);
   });
 
-  it("should evaluate accrual amount as cashable when < 8", function() {
+  it("should evaluate accrual amount as cashable when < cashableHolidayHours", inject(function(CashableHolidayHours) {
     var member = {
-      accruals: { holiday: 5 }
+      accruals: { holiday: CashableHolidayHours * 5 }
     };
 
     var result = holidayCashout.evaluate(member);
-    expect(result.cashable).toBe(5);
-  });
+    expect(result.cashable).toBe(CashableHolidayHours);
+  }));
 
-  it("should evaluate 8 as cashable when accrual amount >= 8", function() {
+  it("should evaluate 8 as cashable when accrual amount >= cashableHolidayHours", inject(function(CashableHolidayHours) {
     var member = {
-      accruals: { holiday: 10 }
+      accruals: { holiday: CashableHolidayHours + 2 }
     };
 
     var result = holidayCashout.evaluate(member);
-    expect(result.cashable).toBe(8);
+    expect(result.cashable).toBe(CashableHolidayHours);
     expect(result.diff).toBe(2);
-  });
+  }));
 });

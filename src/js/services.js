@@ -5,11 +5,12 @@
 
   app
     .value("HoursInDay", 8)
+    .value("CashableHolidayHours", 8)
     .factory("DayHours", ["HoursInDay", DayHoursFactory])
     .factory("SickCashoutAmounts", SickCashoutAmounts)
     .factory("SickCashout", ["DayHours", "SickCashoutAmounts", SickCashoutFactory])
     .factory("VacationCashout", ["DayHours", VacationCashoutFactory])
-    .factory("HolidayCashout", ["DayHours", HolidayCashoutFactory]);
+    .factory("HolidayCashout", ["DayHours", "CashableHolidayHours", HolidayCashoutFactory]);
 
   function DayHoursFactory(hoursInDay) {
     return {
@@ -88,15 +89,15 @@
     }
   }
 
-  function HolidayCashoutFactory(dayHours) {
+  function HolidayCashoutFactory(dayHours, cashableHolidayHours) {
     return {
       evaluate: evaluate
     };
 
     function evaluate(member) {
-      var cashable = member.accruals.holiday < 8
+      var cashable = member.accruals.holiday < cashableHolidayHours
                    ? member.accruals.holiday
-                   : 8;
+                   : cashableHolidayHours;
       return {
         accrued: member.accruals.holiday,
         cashable: cashable,

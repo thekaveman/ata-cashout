@@ -5,9 +5,10 @@
     .module("ataCashout")
     .value("HoursInDay", 8)
     .value("CashableHolidayHours", 8)
+    .value("ProfessionalIncentiveHours", 8)
     .factory("DayHours", ["HoursInDay", DayHoursFactory])
     .factory("SickCashoutAmounts", SickCashoutAmounts)
-    .factory("PersonalCashoutAmounts", ["DayHours", PersonalCashoutAmounts])
+    .factory("PersonalCashoutAmounts", ["DayHours", "ProfessionalIncentiveHours", PersonalCashoutAmounts])
     .factory("SickCashout", ["DayHours", "SickCashoutAmounts", SickCashoutFactory])
     .factory("VacationCashout", ["DayHours", VacationCashoutFactory])
     .factory("HolidayCashout", ["CashableHolidayHours", HolidayCashoutFactory])
@@ -107,11 +108,10 @@
     }
   }
 
-  function PersonalCashoutAmounts(dayHours) {
+  function PersonalCashoutAmounts(dayHours, incentive) {
     var base = {
       cashable: dayHours.toHours(5),
       carryover: dayHours.toHours(3),
-      noncashable: dayHours.toHours(4 + 2)
     };
 
     return [{
@@ -121,7 +121,7 @@
     },{
       minYears: 15,
       maxYears: Number.MAX_VALUE,
-      amounts: angular.extend({}, base, { cashable: base.cashable + 8 })
+      amounts: angular.extend({}, base, { cashable: base.cashable + incentive })
     }];
   }
 
@@ -131,27 +131,25 @@
     };
 
     function evaluate(member) {
-      var amounts = getAmounts(member);
+      var result = getAmounts(member.serviceYears);
       return {
         accrued: {
           personal: member.accruals.personal,
           personalBank: member.accruals.personalBank
         },
-        carryover: amounts.carryover || 0,
-        cashable: amounts.cashable || 0,
-        diff: computeDiff(member.accruals.personal, member.accruals.personalBank, amounts.cashable)
+        carryover: result.carryover || 0,
+        cashable: result.cashable || 0,
+        diff: computeDiff(member.accruals.personal, member.accruals.personalBank, result.cashable)
       };
     }
 
     function getAmounts(serviceYears) {
-      var result = {};
       for(var i = 0; i < amounts.length; i++) {
-        if(amounts[i].minYears <= serviceYears && serviceYears <= amounts[i].maxYears){
-          result = amounts[i];
-          break;
+        if(amounts[i].minYears <= serviceYears && serviceYears <= amounts[i].maxYears) {
+          return amounts[i].amounts;
         }
       }
-      return result;
+      return {};
     }
 
     function computeDiff(personal, personalBank, cashable) {

@@ -77,7 +77,15 @@ describe("SickCashout", function() {
 
     it("should evaluate using first matching amount", function() {
       module(function($provide) {
-        provideTwoMatchingAmounts($provide, "SickCashoutAmounts");
+        $provide.value("SickCashoutAmounts", [{
+          minYears: Number.MIN_VALUE,
+          maxYears: Number.MAX_VALUE,
+          amounts: [3,3,3]
+        },{
+          minYears: Number.MIN_VALUE,
+          maxYears: Number.MAX_VALUE,
+          amounts: [5,5,5]
+        }]);
       });
 
       inject(function(SickCashout) {
@@ -154,6 +162,7 @@ describe("PersonalCashout", function() {
 
   beforeEach(function() {
     member = {
+      serviceYears: 1,
       accruals: { personal: 7, personalBank: 10 }
     };
   });
@@ -174,6 +183,32 @@ describe("PersonalCashout", function() {
       expect(result.cashable).toBe(0);
     })
   });
+
+  it("should evaluate using first matching amount", function() {
+    module(function($provide) {
+      $provide.value("PersonalCashoutAmounts", [{
+        minYears: Number.MIN_VALUE,
+        maxYears: Number.MAX_VALUE,
+        amounts: {
+          cashable: 1,
+          carryover: 3
+        }
+      },{
+        minYears: Number.MIN_VALUE,
+        maxYears: Number.MAX_VALUE,
+        amounts: {
+          cashable: 2,
+          carryover: 4
+        }
+      }]);
+    });
+
+    inject(function(PersonalCashout) {
+      var result = PersonalCashout.evaluate(member);
+      expect(result.cashable).toBe(1);
+      expect(result.carryover).toBe(3);
+    })
+  });
 });
 
 function provideImpossibleAmounts($provide, amountName) {
@@ -183,19 +218,4 @@ function provideImpossibleAmounts($provide, amountName) {
         maxYears: Number.MIN_VALUE,
         amounts: []
     }]);
-};
-
-function provideTwoMatchingAmounts($provide, amountName){
-  $provide.value(
-    amountName,
-    [{
-      minYears: Number.MIN_VALUE,
-      maxYears: Number.MAX_VALUE,
-      amounts: [3,3,3]
-    },{
-      minYears: Number.MIN_VALUE,
-      maxYears: Number.MAX_VALUE,
-      amounts: [5,5,5]
-    }]
-  );
 };

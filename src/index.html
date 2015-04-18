@@ -32,7 +32,18 @@
     <div class="container-fluid">
       <h1>ATA Cashout Calculator</h1>
       <p>Use this calculator to determine how best to use and save your accrued leave time.</p>
-      <ng-include src="'partials/calculator.html'"></ng-include>
+      <div class="row" ng-controller="CalculatorController">
+        <div class="col-sm-6">
+          <job-panel member="member"></job-panel>
+          <div>{{member | json}}</div>
+          <accruals-panel member="member"></accruals-panel>
+          <button class="btn btn-success" ng-click="calc.go()">Go</button>
+          <button class="btn btn-danger" ng-click="calc.reset()">Reset</button>
+        </div>
+        <div class="col-sm-6" ng-if="result.ready">
+          <results-panel result="result"/>
+        </div>
+      </div>
     </div>
   </body>
 </html>

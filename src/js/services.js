@@ -47,11 +47,13 @@
     };
 
     function evaluate(member) {
-      var cashable = member.accruals.sick < 12 ? 0 : getCashableHours(member.serviceYears, member.used.sick);
+      var cashable = member.accrued.sick < 12
+                   ? 0
+                   : getCashableHours(member.serviceYears, member.used.sick);
       return {
-        accrued: member.accruals.sick,
+        accrued: member.accrued.sick,
         cashable: cashable,
-        diff: member.accruals.sick - cashable
+        diff: member.accrued.sick - cashable
       };
     }
 
@@ -82,11 +84,11 @@
     };
 
     function evaluate(member) {
-      var cashable = dayHours.toHours(dayHours.toWholeDays(member.accruals.vacation));
+      var cashable = dayHours.toHours(dayHours.toWholeDays(member.accrued.vacation));
       return {
-        accrued: member.accruals.vacation,
+        accrued: member.accrued.vacation,
         cashable: cashable,
-        diff: member.accruals.vacation - cashable
+        diff: member.accrued.vacation - cashable
       };
     }
   }
@@ -97,13 +99,13 @@
     };
 
     function evaluate(member) {
-      var cashable = member.accruals.holiday < cashableHolidayHours
-                   ? member.accruals.holiday
+      var cashable = member.accrued.holiday < cashableHolidayHours
+                   ? member.accrued.holiday
                    : cashableHolidayHours;
       return {
-        accrued: member.accruals.holiday,
+        accrued: member.accrued.holiday,
         cashable: cashable,
-        diff: member.accruals.holiday - cashable
+        diff: member.accrued.holiday - cashable
       };
     }
   }
@@ -134,12 +136,12 @@
       var result = getAmounts(member.serviceYears);
       return {
         accrued: {
-          personal: member.accruals.personal,
-          personalBank: member.accruals.personalBank
+          personal: member.accrued.personal,
+          personalBank: member.accrued.personalBank
         },
         carryover: result.carryover || 0,
         cashable: result.cashable || 0,
-        diff: computeDiff(member.accruals.personal, member.accruals.personalBank, result.cashable)
+        diff: computeDiff(member.accrued.personal, member.accrued.personalBank, result.cashable)
       };
     }
 

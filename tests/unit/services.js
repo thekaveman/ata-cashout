@@ -35,7 +35,7 @@ describe("SickCashout", function() {
     });
 
     member = {
-        accruals: { sick: 10 },
+        accrued: { sick: 10 },
         serviceYears: 1,
         used: { sick: 0 },
     };
@@ -47,13 +47,13 @@ describe("SickCashout", function() {
   describe("member has at least 12 hours banked", function() {
     beforeEach(function() {
     member = {
-        accruals: { sick: 15 },
+        accrued: { sick: 15 },
         serviceYears: 1,
         used: { sick: 0 },
     };
   });
 
-    it("should return member's accruals on evaluation", function() {
+    it("should return member's accrued on evaluation", function() {
       inject(function(SickCashout) {
         sickCashout = SickCashout;
       });
@@ -105,11 +105,11 @@ describe("VacationCashout", function() {
   beforeEach(inject(function(VacationCashout) {
     vacationCashout = VacationCashout;
     member = {
-      accruals: { vacation: 5 }
+      accrued: { vacation: 5 }
     };
   }));
 
-  it("should return member's accruals on evaluation", function() {
+  it("should return member's accrued on evaluation", function() {
     var result = vacationCashout.evaluate(member);
     expect(result.accrued).toBe(5);
   });
@@ -128,9 +128,9 @@ describe("HolidayCashout", function() {
     holidayCashout = HolidayCashout;
   }));
 
-  it("should return member's accruals on evaluation", function() {
+  it("should return member's accrued on evaluation", function() {
     var member = {
-      accruals: { holiday: 7 }
+      accrued: { holiday: 7 }
     };
 
     var result = holidayCashout.evaluate(member);
@@ -139,7 +139,7 @@ describe("HolidayCashout", function() {
 
   it("should evaluate accrual amount as cashable when < cashableHolidayHours", inject(function(CashableHolidayHours) {
     var member = {
-      accruals: { holiday: CashableHolidayHours * 5 }
+      accrued: { holiday: CashableHolidayHours * 5 }
     };
 
     var result = holidayCashout.evaluate(member);
@@ -148,7 +148,7 @@ describe("HolidayCashout", function() {
 
   it("should evaluate 8 as cashable when accrual amount >= cashableHolidayHours", inject(function(CashableHolidayHours) {
     var member = {
-      accruals: { holiday: CashableHolidayHours + 2 }
+      accrued: { holiday: CashableHolidayHours + 2 }
     };
 
     var result = holidayCashout.evaluate(member);
@@ -163,11 +163,11 @@ describe("PersonalCashout", function() {
   beforeEach(function() {
     member = {
       serviceYears: 1,
-      accruals: { personal: 7, personalBank: 10 }
+      accrued: { personal: 7, personalBank: 10 }
     };
   });
 
-  it("should return member's accruals on evaluation", inject(function(PersonalCashout) {
+  it("should return member's accrued on evaluation", inject(function(PersonalCashout) {
     var result = PersonalCashout.evaluate(member);
     expect(result.accrued.personal).toBe(7);
     expect(result.accrued.personalBank).toBe(10);

@@ -7,6 +7,7 @@
     .value("CashableHolidayHours", 8)
     .value("ProfessionalIncentiveHours", 8)
     .factory("DayHours", ["HoursInDay", DayHoursFactory])
+    .factory("Member", MemberFactory)
     .factory("SickCashoutAmounts", SickCashoutAmounts)
     .factory("PersonalCashoutAmounts", ["DayHours", "ProfessionalIncentiveHours", PersonalCashoutAmounts])
     .factory("SickCashout", ["DayHours", "SickCashoutAmounts", SickCashoutFactory])
@@ -26,6 +27,40 @@
 
     function toHours(days) {
       return days * hoursInDay;
+    }
+  }
+
+  function MemberFactory() {
+    return {
+      default: defaultMember,
+      initialize: initialize
+    };
+
+    function defaultMember() {
+      return {
+        payRate: 0,
+        serviceYears: 0,
+        accrued: {
+          holiday: 0,
+          personal: 0,
+          personalBank: 0,
+          sick: 0,
+          vacation: 0
+        },
+        used: {
+          sick: 0
+        }
+      };
+    }
+
+    function initialize(member) {
+      var def = defaultMember();
+      member = member || {};
+      if(!member.hasOwnProperty("payRate")) member.payRate = 0;
+      if(!member.hasOwnProperty("serviceYears")) member.serviceYears = 0;
+      member.accrued = angular.extend({}, def.accrued, member.accrued);
+      member.used = angular.extend({}, def.used, member.used);
+      return member;
     }
   }
 

@@ -34,10 +34,12 @@
       <p>Use this calculator to determine how best to use and save your accrued leave time.</p>
       <div class="row" ng-controller="CalculatorController">
         <div class="col-sm-6">
+          <div class="well">
+            <strong>member</strong>
+            <pre>{{member | json}}</pre>
+          </div>
           <job-panel member="member"></job-panel>
-          <div>{{member | json}}</div>
           <accruals-panel member="member"></accruals-panel>
-          <button class="btn btn-success" ng-click="calc.go()">Go</button>
           <button class="btn btn-danger" ng-click="calc.reset()">Reset</button>
         </div>
         <div class="col-sm-6" ng-if="result.ready">

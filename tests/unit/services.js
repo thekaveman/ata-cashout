@@ -26,18 +26,18 @@ describe("DayHours", function() {
   });
 });
 
-describe("Member", function() {
-  var Member;
+describe("MemberData", function() {
+  var memberData;
 
-  beforeEach(inject(function(_Member_) {
-      Member = _Member_;
+  beforeEach(inject(function(MemberData) {
+    memberData = MemberData;
   }));
 
   describe("by default", function() {
     var member;
 
     beforeEach(function() {
-      member = Member.default();
+      member = memberData.default();
     });
 
     it("should have 0 payRate", function() {
@@ -63,12 +63,12 @@ describe("Member", function() {
 
   describe("initialize", function() {
     it("should return the default when given empty", function() {
-      var result = Member.initialize(undefined);
-      expect(result).toEqual(Member.default());
+      var result = memberData.initialize(undefined);
+      expect(result).toEqual(memberData.default());
 
       result = undefined;
-      result = Member.initialize({});
-      expect(result).toEqual(Member.default());
+      result = memberData.initialize({});
+      expect(result).toEqual(memberData.default());
     });
 
     it("should always take the argument's values", function() {
@@ -87,7 +87,7 @@ describe("Member", function() {
         }
       };
 
-      var result = Member.initialize(arg);
+      var result = memberData.initialize(arg);
       expect(result.payRate).toBe(5);
       expect(result.serviceYears).toBe(5);
       expect(result.accrued.holiday).toBe(5);
@@ -96,34 +96,73 @@ describe("Member", function() {
       expect(result.accrued.sick).toBe(5);
       expect(result.accrued.vacation).toBe(5);
     });
+
+    it("should fill in the argument's missing values with defaults", function() {
+      var arg = {
+        //payRate: 5,
+        //serviceYears: 5,
+        accrued: {
+          //holiday: 5,
+          //personal: 5,
+          personalBank: 5,
+          sick: 5,
+          vacation: 5
+        },
+        used: {
+          //sick: 5
+        }
+      };
+      var result = memberData.initialize(arg);
+
+      expect(result.payRate).toBe(0);
+      expect(result.serviceYears).toBe(0);
+      expect(result.accrued.holiday).toBe(0);
+      expect(result.accrued.personal).toBe(0);
+      expect(result.accrued.personalBank).toBe(5);
+      expect(result.accrued.sick).toBe(5);
+      expect(result.accrued.vacation).toBe(5);
+      expect(result.used.sick).toBe(0);
+    });
   });
 });
 
 describe("SickCashout", function() {
   var sickCashout, member;
 
-  it("should evaluate to 0 cashable when member has less than 12 hours banked", function() {
-    inject(function(SickCashout) {
-      sickCashout = SickCashout;
-    });
+  it("should initialize members on evaluation", inject(function(MemberData, SickCashout) {
+    spyOn(MemberData, "initialize").and.callThrough();
+    SickCashout.evaluate({});
+    expect(MemberData.initialize).toHaveBeenCalled();
+  }));
 
-    member = {
+  describe("member with less than 12 hours banked", function() {
+    beforeEach(inject(function(SickCashout) {
+      sickCashout = SickCashout;
+      member = {
         accrued: { sick: 10 },
         serviceYears: 1,
         used: { sick: 0 },
-    };
+      };
+    }));
 
-    var result = sickCashout.evaluate(member);
-    expect(result.cashable).toBe(0);
+    it("should return member's accrued on evaluation", function() {
+      var result = sickCashout.evaluate(member);
+      expect(result.accrued).toBe(10);
+    });
+
+    it("should evaluate to 0 cashable when member has less than 12 hours banked", function() {
+      var result = sickCashout.evaluate(member);
+      expect(result.cashable).toBe(0);
+    });
   });
 
-  describe("member has at least 12 hours banked", function() {
+  describe("member with at least 12 hours banked", function() {
     beforeEach(function() {
-    member = {
-        accrued: { sick: 15 },
-        serviceYears: 1,
-        used: { sick: 0 },
-    };
+      member = {
+          accrued: { sick: 15 },
+          serviceYears: 1,
+          used: { sick: 0 },
+      };
   });
 
     it("should return member's accrued on evaluation", function() {
@@ -182,6 +221,12 @@ describe("VacationCashout", function() {
     };
   }));
 
+  it("should initialize members on evaluation", inject(function(MemberData) {
+    spyOn(MemberData, "initialize").and.callThrough();
+    vacationCashout.evaluate({});
+    expect(MemberData.initialize).toHaveBeenCalled();
+  }));
+
   it("should return member's accrued on evaluation", function() {
     var result = vacationCashout.evaluate(member);
     expect(result.accrued).toBe(5);
@@ -199,6 +244,12 @@ describe("HolidayCashout", function() {
 
   beforeEach(inject(function(HolidayCashout) {
     holidayCashout = HolidayCashout;
+  }));
+
+  it("should initialize members on evaluation", inject(function(MemberData) {
+    spyOn(MemberData, "initialize").and.callThrough();
+    holidayCashout.evaluate({});
+    expect(MemberData.initialize).toHaveBeenCalled();
   }));
 
   it("should return member's accrued on evaluation", function() {
@@ -239,6 +290,12 @@ describe("PersonalCashout", function() {
       accrued: { personal: 7, personalBank: 10 }
     };
   });
+
+  it("should initialize members on evaluation", inject(function(MemberData, PersonalCashout) {
+    spyOn(MemberData, "initialize").and.callThrough();
+    PersonalCashout.evaluate({});
+    expect(MemberData.initialize).toHaveBeenCalled();
+  }));
 
   it("should return member's accrued on evaluation", inject(function(PersonalCashout) {
     var result = PersonalCashout.evaluate(member);

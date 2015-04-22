@@ -7,13 +7,13 @@
     .value("CashableHolidayHours", 8)
     .value("ProfessionalIncentiveHours", 8)
     .factory("DayHours", ["HoursInDay", DayHoursFactory])
-    .factory("Member", MemberFactory)
+    .factory("MemberData", MemberDataFactory)
     .factory("SickCashoutAmounts", SickCashoutAmounts)
     .factory("PersonalCashoutAmounts", ["DayHours", "ProfessionalIncentiveHours", PersonalCashoutAmounts])
-    .factory("SickCashout", ["DayHours", "SickCashoutAmounts", SickCashoutFactory])
-    .factory("VacationCashout", ["DayHours", VacationCashoutFactory])
-    .factory("HolidayCashout", ["CashableHolidayHours", HolidayCashoutFactory])
-    .factory("PersonalCashout", ["PersonalCashoutAmounts", PersonalCashoutFactory]);
+    .factory("SickCashout", ["MemberData", "DayHours", "SickCashoutAmounts", SickCashoutFactory])
+    .factory("VacationCashout", ["MemberData", "DayHours", VacationCashoutFactory])
+    .factory("HolidayCashout", ["MemberData", "CashableHolidayHours", HolidayCashoutFactory])
+    .factory("PersonalCashout", ["MemberData", "PersonalCashoutAmounts", PersonalCashoutFactory]);
 
   function DayHoursFactory(hoursInDay) {
     return {
@@ -30,7 +30,7 @@
     }
   }
 
-  function MemberFactory() {
+  function MemberDataFactory() {
     return {
       default: defaultMember,
       initialize: initialize
@@ -55,11 +55,13 @@
 
     function initialize(member) {
       var def = defaultMember();
+
       member = member || {};
-      if(!member.hasOwnProperty("payRate")) member.payRate = 0;
-      if(!member.hasOwnProperty("serviceYears")) member.serviceYears = 0;
+      if(!member.hasOwnProperty("payRate")) member.payRate = def.payRate;
+      if(!member.hasOwnProperty("serviceYears")) member.serviceYears = def.payRate;
       member.accrued = angular.extend({}, def.accrued, member.accrued);
       member.used = angular.extend({}, def.used, member.used);
+
       return member;
     }
   }
@@ -76,12 +78,13 @@
    }];
   }
 
-  function SickCashoutFactory(dayHours, amounts) {
+  function SickCashoutFactory(memberData, dayHours, amounts) {
     return {
       evaluate: evaluate
     };
 
     function evaluate(member) {
+      member = memberData.initialize(member);
       var cashable = member.accrued.sick < 12
                    ? 0
                    : getCashableHours(member.serviceYears, member.used.sick);
@@ -113,12 +116,13 @@
     }
   }
 
-  function VacationCashoutFactory(dayHours) {
+  function VacationCashoutFactory(memberData, dayHours) {
     return {
       evaluate: evaluate
     };
 
     function evaluate(member) {
+      member = memberData.initialize(member);
       var cashable = dayHours.toHours(dayHours.toWholeDays(member.accrued.vacation));
       return {
         accrued: member.accrued.vacation,
@@ -128,12 +132,13 @@
     }
   }
 
-  function HolidayCashoutFactory(cashableHolidayHours) {
+  function HolidayCashoutFactory(memberData, cashableHolidayHours) {
     return {
       evaluate: evaluate
     };
 
     function evaluate(member) {
+      member = memberData.initialize(member);
       var cashable = member.accrued.holiday < cashableHolidayHours
                    ? member.accrued.holiday
                    : cashableHolidayHours;
@@ -162,12 +167,13 @@
     }];
   }
 
-  function PersonalCashoutFactory(amounts) {
+  function PersonalCashoutFactory(memberData, amounts) {
     return {
       evaluate: evaluate
     };
 
     function evaluate(member) {
+      member = memberData.initialize(member);
       var result = getAmounts(member.serviceYears);
       return {
         accrued: {

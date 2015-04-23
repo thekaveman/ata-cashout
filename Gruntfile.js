@@ -4,7 +4,7 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON("package.json"),
     //clean up partial build results
     clean: {
-      dist: ["dist/js/*.js", "!dist/js/*.min.js", "dist/css/*.css", "!dist/css/*.min.css"]
+      dist: ["dist/js/*.js", "!dist/js/*.min.js", "dist/*.css", "!dist/*.min.css"]
     },
     //concatenate javascript files
     concat: {
@@ -14,13 +14,13 @@ module.exports = function(grunt) {
             src: [
               "node_modules/bootstrap/dist/css/bootstrap.min.css"
             ],
-            dest: "dist/css/vendor.min.css"
+            dest: "dist/vendor.min.css"
           },
           {
             src: [
-              "src/css/app.css"
+              "src/app.css"
             ],
-            dest: "dist/css/app.min.css"
+            dest: "dist/app.min.css"
           },
           {
             src: [

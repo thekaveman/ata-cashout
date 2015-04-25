@@ -7,6 +7,9 @@
       .factory("SickCashout", ["Members", "DayHours", "SickCashoutAmounts", SickCashoutFactory]);
 
   function SickCashoutAmounts() {
+    //the 'amounts' arrays below
+    //represent cashable days
+    //indexed by used days
     return [{
       minYears: 0,
       maxYears: 9,

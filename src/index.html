@@ -3,29 +3,29 @@
   <head>
     <meta charset="utf-8" />
 
-    <!-- build:css:dist css/vendor.min.css -->
-    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css" />
+    <!-- build:css:dist vendor.min.css -->
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.css" />
     <!-- /build -->
 
-    <!-- build:css:dist css/app.min.css -->
-    <link rel="stylesheet" href="css/app.css" />
+    <!-- build:css:dist app.min.css -->
+    <link rel="stylesheet" href="app.css" />
     <!-- /build -->
 
-    <!-- build:js:dist js/vendor.min.js -->
-    <script src="../node_modules/jquery/dist/jquery.min.js"></script>
-    <script src="../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="../node_modules/angular/angular.min.js"></script>
-    <script src="../node_modules/angular-route/angular-route.min.js"></script>
-    <script src="../node_modules/angular-resource/angular-resource.min.js"></script>
-    <script src="../node_modules/angular-sanitize/angular-sanitize.min.js"></script>
+    <!-- build:js:dist vendor.min.js -->
+    <script src="../node_modules/jquery/dist/jquery.js"></script>
+    <script src="../node_modules/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="../node_modules/angular/angular.js"></script>
     <!-- /build -->
 
-    <!-- build:js:dist js/app.min.js -->
-    <script src="js/app.js"></script>
-    <script src="js/filters.js"></script>
-    <script src="js/directives.js"></script>
-    <script src="js/services.js"></script>
-    <script src="js/controllers.js"></script>
+    <!-- build:js:dist app.min.js -->
+    <script src="common/services.js"></script>
+    <script src="holiday/services.js"></script>
+    <script src="personal/services.js"></script>
+    <script src="sick/services.js"></script>
+    <script src="vacation/services.js"></script>
+    <script src="calculator/CalculatorController.js"></script>
+    <script src="calculator/directives.js"></script>
+    <script src="app.js"></script>
     <!-- /build -->
   </head>
   <body>
@@ -34,16 +34,17 @@
       <p>Use this calculator to determine how best to use and save your accrued leave time.</p>
       <div class="row" ng-controller="CalculatorController">
         <div class="col-sm-6">
-          <div class="well">
-            <strong>member</strong>
-            <pre>{{member | json}}</pre>
-          </div>
-          <job-panel member="member"></job-panel>
-          <accruals-panel member="member"></accruals-panel>
+          <job-panel member="member.current"></job-panel>
+          <accruals-panel member="member.current"></accruals-panel>
+          <button class="btn btn-success" ng-click="calc.go()">Go</button>
           <button class="btn btn-danger" ng-click="calc.reset()">Reset</button>
         </div>
-        <div class="col-sm-6" ng-if="result.ready">
-          <results-panel result="result"/>
+        <div class="col-sm-6">
+           <div class="well">
+            <strong>member</strong>
+            <pre>{{member.current | json}}</pre>
+          </div>
+          <results-panel result="member.result"/>
         </div>
       </div>
     </div>

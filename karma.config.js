@@ -13,8 +13,8 @@ module.exports = function(config) {
       'node_modules/jquery/dist/jquery.min.js',
       'node_modules/angular/angular.js',
       'node_modules/angular-mocks/angular-mocks.js',
-      'src/js/*.js',
-      'tests/unit/*.js'
+      'src/**/*.js',
+      "tests/**/*.js"
     ],
     // list of files to exclude
     exclude: [],

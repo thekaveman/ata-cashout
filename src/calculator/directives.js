@@ -2,10 +2,10 @@
   "use strict";
 
   angular
-    .module("ataCashout")
-    .directive("accrualsPanel", accrualsPanel)
-    .directive("jobPanel", jobPanel)
-    .directive("resultsPanel", resultsPanel);
+    .module("ataCashout.calculator")
+      .directive("accrualsPanel", accrualsPanel)
+      .directive("jobPanel", jobPanel)
+      .directive("resultsPanel", resultsPanel);
 
   function accrualsPanel() {
     return {
@@ -13,7 +13,7 @@
       scope: {
         member: "="
       },
-      templateUrl: "partials/accruals-panel.html"
+      templateUrl: "calculator/accruals-panel.html"
     };
   }
 
@@ -23,7 +23,7 @@
       scope: {
         member: "="
       },
-      templateUrl: "partials/job-panel.html"
+      templateUrl: "calculator/job-panel.html"
     };
   }
 
@@ -33,7 +33,7 @@
       scope: {
         result: "="
       },
-      templateUrl: "partials/results-panel.html"
+      templateUrl: "calculator/results-panel.html"
     };
   }
 

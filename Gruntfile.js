@@ -4,38 +4,19 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON("package.json"),
     //clean up partial build results
     clean: {
-      dist: ["dist/js/*.js", "!dist/js/*.min.js", "dist/css/*.css", "!dist/css/*.min.css"]
+      dist: ["dist/*.js", "!dist/*.min.js", "dist/*.css", "!dist/*.min.css"]
     },
     //concatenate javascript files
     concat: {
       dist: {
-        files: [
-          {
-            src: [
-              "node_modules/bootstrap/dist/css/bootstrap.min.css"
-            ],
-            dest: "dist/css/vendor.min.css"
-          },
-          {
-            src: [
-              "src/css/app.css"
-            ],
-            dest: "dist/css/app.min.css"
-          },
-          {
-            src: [
-              "node_modules/jquery/dist/jquery.min.js",
-              "node_modules/bootstrap/dist/js/bootstrap.min.js",
-              "node_modules/angular/angular.min.js",
-              "node_modules/angular-*/angular-*.min.js",
-            ],
-            dest: "dist/js/vendor.min.js"
-          },
-          {
-            src: "src/js/*.js",
-            dest: "dist/js/app.js"
-          }
-        ]
+        files: {
+          "dist/vendor.min.js": [
+            "node_modules/jquery/dist/jquery.min.js",
+            "node_modules/bootstrap/dist/js/bootstrap.min.js",
+            "node_modules/angular/angular.min.js",
+            "node_modules/angular-*/angular-*.min.js",
+          ]
+        }
       }
     },
     //copy static
@@ -48,10 +29,15 @@ module.exports = function(grunt) {
       },
       partials: {
         expand: true,
-        cwd: "src/partials",
-        src: "*.html",
-        dest: "dist/partials/"
-      }
+        cwd: "src/",
+        src: "**/*.html",
+        dest: "dist/"
+      },
+      styles: {
+        files: {
+          "dist/vendor.min.css": ["node_modules/bootstrap/dist/css/bootstrap.min.css"],
+        }
+      },
     },
     //post-process HTML
     processhtml: {
@@ -61,21 +47,24 @@ module.exports = function(grunt) {
         }
       }
     },
-    //minify javascript files
+    //minify
     uglify: {
       dist: {
-        files: [
-          {
-            src: "dist/js/app.js",
-            dest: "dist/js/app.min.js"
-          }
-        ]
+        files: {
+          "dist/app.min.js": [
+            "src/common/*.js",
+            "src/**/*.js",
+            "src/calculator/*.js",
+            "src/app.js"
+          ],
+          "dist/app.min.css": "src/app.css",
+        }
       }
     },
     //watch for changes, and run other tasks on detection
     watch: {
       main: {
-        files: ["Gruntfile.js", "src/**/*.html", "src/js/*.js"],
+        files: ["Gruntfile.js", "karma.config.js", "src/**/*.html", "src/**/*.js"],
         tasks: ["all"],
         options: {
           debounceDelay: 3000,
@@ -92,6 +81,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-clean');
 
-  grunt.registerTask("all", ["concat", "uglify", "processhtml", "copy", "clean"])
+  grunt.registerTask("all", ["concat", "uglify", "copy", "processhtml", "clean"])
   grunt.registerTask("default", ["all"]);
 };

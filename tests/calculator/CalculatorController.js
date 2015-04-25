@@ -1,6 +1,6 @@
 "use strict";
 
-beforeEach(module("ataCashout"));
+beforeEach(module("ataCashout.calculator"));
 
 describe("CalculatorController", function() {
   var scope, controller;

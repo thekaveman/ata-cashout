@@ -4,25 +4,25 @@
   angular
     .module("ataCashout.salaries", [])
       .value("DataSourcesUrl", "https://api.github.com/repos/CityofSantaMonica/SalarySchedules.Client/contents/data")
-      .factory("FilenameMatcher", FilenameMatcherFactory)
-      .factory("Salaries", ["$http", "$q", "DataSourcesUrl", "FilenameMatcher", SalariesFactory]);
+      .factory("FileMatcher", FileMatcherFactory)
+      .factory("Salaries", ["$http", "$q", "DataSourcesUrl", "FileMatcher", SalariesFactory]);
 
-  function FilenameMatcherFactory() {
+  function FileMatcherFactory() {
     return {
       parse: parse
     };
 
     function parse(input) {
-      var result = /^salary-sched-(\d{2})-(\d{2})\.json$/i.exec(input);
+      var result = /(\d{2})-(\d{2})/gi.exec(input);
       if(result === null) {
         return false;
       }
-      else{
+      else {
         var codes = result.slice(1,3);
         return {
           shortCode: "FY " + codes.join("/"),
           sort: codes.join("")
-        }
+        };
       }
     }
   }

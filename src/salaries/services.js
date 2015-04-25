@@ -5,15 +5,16 @@
     .module("ataCashout.salaries", [])
       .value("DataSourcesUrl", "https://api.github.com/repos/CityofSantaMonica/SalarySchedules.Client/contents/data")
       .factory("FileMatcher", FileMatcherFactory)
-      .factory("Salaries", ["$http", "$q", "DataSourcesUrl", "FileMatcher", SalariesFactory]);
+      .factory("JobMatcher", JobMatcherFactory)
+      .factory("Salaries", ["$http", "$q", "DataSourcesUrl", "FileMatcher", "JobMatcher", SalariesFactory]);
 
   function FileMatcherFactory() {
     return {
-      parse: parse
+      match: match
     };
 
-    function parse(input) {
-      var result = /(\d{2})-(\d{2})/gi.exec(input);
+    function match(input) {
+      var result = /(\d{2})-(\d{2})/gi.exec(input.name);
       if(result === null) {
         return false;
       }
@@ -27,10 +28,23 @@
     }
   }
 
-  function SalariesFactory($http, $q, dataUrl, fileMatcher) {
+  function JobMatcherFactory() {
+    return {
+      match: match
+    };
+
+    function match(job) {
+      if(job.BargainingUnit.Code === "ATA") {
+        return true;
+      }
+      return false;
+    }
+  }
+
+  function SalariesFactory($http, $q, dataUrl, fileMatcher, jobMatcher) {
     return {
       getFiscalYears: getFiscalYears,
-      getSalaries: getSalaries
+      getJobClasses: getJobClasses
     };
 
     function getFiscalYears() {
@@ -39,13 +53,13 @@
           var transformed = [];
 
           angular.forEach(data.data, function(item) {
-            var parsed = fileMatcher.parse(item.name);
-            if(parsed) {
-                transformed.push({
-                  shortCode: parsed.shortCode,
-                  sort: parsed.sort,
-                  url: item.download_url
-                });
+            var matched = fileMatcher.match(item);
+            if(matched) {
+              transformed.push({
+                shortCode: matched.shortCode,
+                sort: matched.sort,
+                url: item.download_url
+              });
             }
           });
 
@@ -54,7 +68,20 @@
       });
     }
 
-    function getSalaries(fiscalYear) {
+    function getJobClasses(url) {
+      return $http.get(url, { cache: true }).then(function(data) {
+        return $q(function(resolve) {
+          var jobs = [];
+
+          angular.forEach(data.data.jobClasses, function(job) {
+            if(jobMatcher.match(job)) {
+              jobs.push(job);
+            }
+          });
+
+          resolve(jobs);
+        });
+      });
     }
   }
 })();

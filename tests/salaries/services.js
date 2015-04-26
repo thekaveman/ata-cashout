@@ -25,6 +25,52 @@ describe("FileMatcher", function() {
   });
 });
 
+describe("FiscalYearMatcher", function() {
+  var matcher;
+
+  beforeEach(inject(function(FiscalYearMatcher) {
+    matcher = FiscalYearMatcher;
+  }));
+
+  it("should match null for null or empty input", function() {
+    expect(matcher.match(null)).toBeNull();
+    expect(matcher.match([])).toBeNull();
+  });
+
+  describe("when July 1 or later", function() {
+    beforeEach(function() {
+      //months are base 0
+      var baseTime = new Date(2015, 6, 1);
+      jasmine.clock().mockDate(baseTime);
+    });
+
+    it("should match the last input", function() {
+      var fiscalYears = [{id: "first"},{id:"second"},{id:"last"}];
+      var match = matcher.match(fiscalYears);
+      expect(match.id).toBe("last");
+    });
+  });
+
+  describe("when June 30 or earlier", function() {
+    beforeEach(function() {
+      //months are base 0
+      var baseTime = new Date(2015, 5, 30);
+      jasmine.clock().mockDate(baseTime);
+    });
+    
+    it("should match the previous fiscal year if found", function() {
+      var fiscalYears = [{id: "first", sort: "1415"},{id:"second", sort: "1314"},{id:"last", sort:"1516"}];
+      expect(matcher.match(fiscalYears).id).toBe("first");
+    });
+
+    it("should match the last sorted fiscal year if not found", function() {
+      var fiscalYears = [{id: "first", sort: "1314"},{id:"second", sort: "1213"},{id:"last", sort:"1110"}];
+      expect(matcher.match(fiscalYears).id).toBe("first");
+    });
+  });
+
+});
+
 describe("JobMatcher", function() {
   var matcher;
 
@@ -46,7 +92,7 @@ describe("JobMatcher", function() {
 });
 
 describe("Salaries", function() {
-  var salaries, $httpBackend;
+  var salaries;
 
   beforeEach(module(function($provide) {
     $provide.value("FileMatcher", {
@@ -68,52 +114,65 @@ describe("Salaries", function() {
     });
   }));
 
-  beforeEach(inject(function(Salaries, _$httpBackend_) {
+  beforeEach(inject(function(Salaries) {
     salaries = Salaries;
-    $httpBackend = _$httpBackend_;
   }));
 
-  afterEach(function() {
-     $httpBackend.verifyNoOutstandingExpectation();
-     $httpBackend.verifyNoOutstandingRequest();
-   });
+  describe("$http", function() {
+    var $httpBackend;
 
-  it("should get matching fiscal years", inject(function(DataSourcesUrl) {
-    $httpBackend.when("GET", DataSourcesUrl)
-      .respond([
-        {match: true, name:"fy0", download_url:"dl0"},
-        {match: false, name:"fy1", download_url:"dl1"},
-        {match: true, name:"fy2", download_url:"dl2"}
-      ]);
+    beforeEach(inject(function(_$httpBackend_) {
+      $httpBackend = _$httpBackend_;
+    }));
 
-    $httpBackend.expectGET(DataSourcesUrl);
-    salaries.getFiscalYears().then(function(data) {
-        expect(data.length).toBe(2);
-        expect(data[0].shortCode).toBe("fy0");
-        expect(data[0].sort).toBe("fy0");
-        expect(data[0].url).toBe("dl0");
-        expect(data[1].shortCode).toBe("fy2");
-        expect(data[1].sort).toBe("fy2");
-        expect(data[1].url).toBe("dl2");
+    afterEach(function() {
+      $httpBackend.verifyNoOutstandingExpectation();
+      $httpBackend.verifyNoOutstandingRequest();
     });
-    $httpBackend.flush();
-  }));
 
-  it("should get matching job classes", inject(function(DataSourcesUrl) {
-    $httpBackend.when("GET", DataSourcesUrl)
-      .respond({
-        jobClasses: [
-          { match: true, Title:"class0" },
-          { match: false, Title:"class1" },
-          { match: true, Title:"class2" }
-      ]});
+    it("should get matching fiscal years", inject(function(DataSourcesUrl) {
+      $httpBackend.when("GET", DataSourcesUrl)
+        .respond([
+          {match: true, name:"fy0", download_url:"dl0"},
+          {match: false, name:"fy1", download_url:"dl1"},
+          {match: true, name:"fy2", download_url:"dl2"}
+        ]);
 
-    $httpBackend.expectGET(DataSourcesUrl);
-    salaries.getJobClasses(DataSourcesUrl).then(function(data) {
-        expect(data.length).toBe(2);
-        expect(data[0].Title).toBe("class0");
-        expect(data[1].Title).toBe("class2");
-    });
-    $httpBackend.flush();
+      $httpBackend.expectGET(DataSourcesUrl);
+      salaries.getFiscalYears().then(function(data) {
+          expect(data.length).toBe(2);
+          expect(data[0].shortCode).toBe("fy0");
+          expect(data[0].sort).toBe("fy0");
+          expect(data[0].url).toBe("dl0");
+          expect(data[1].shortCode).toBe("fy2");
+          expect(data[1].sort).toBe("fy2");
+          expect(data[1].url).toBe("dl2");
+      });
+      $httpBackend.flush();
+    }));
+
+    it("should get matching job classes", inject(function(DataSourcesUrl) {
+      $httpBackend.when("GET", DataSourcesUrl)
+        .respond({
+          jobClasses: [
+            { match: true, Title:"class0" },
+            { match: false, Title:"class1" },
+            { match: true, Title:"class2" }
+        ]});
+
+      $httpBackend.expectGET(DataSourcesUrl);
+      salaries.getJobClasses(DataSourcesUrl).then(function(data) {
+          expect(data.length).toBe(2);
+          expect(data[0].Title).toBe("class0");
+          expect(data[1].Title).toBe("class2");
+      });
+      $httpBackend.flush();
+    }));
+  });
+
+  it("should call through to FiscalYearMatcher to get closest", inject(function(FiscalYearMatcher) {
+    spyOn(FiscalYearMatcher, "match");
+    var closest = salaries.getClosestFiscalYear([]);
+    expect(FiscalYearMatcher.match).toHaveBeenCalledWith([]);
   }));
 });

@@ -3,11 +3,18 @@
 
   angular
     .module("ataCashout.salaries", [])
-      .value("DataSourcesUrl", "https://api.github.com/repos/CityofSantaMonica/SalarySchedules.Client/contents/data")
+      .value("DataUrl", "https://api.github.com/repos/CityofSantaMonica/SalarySchedules.Client/contents/data")
       .factory("FileMatcher", FileMatcherFactory)
       .factory("FiscalYearMatcher", FiscalYearMatcherFactory)
       .factory("JobMatcher", JobMatcherFactory)
-      .factory("Salaries", ["$http", "$q", "DataSourcesUrl", "FileMatcher", "FiscalYearMatcher", "JobMatcher", SalariesFactory]);
+      .factory("Salaries", [
+        //data request services
+        "$window", "$http", "$q", "DataUrl",
+        //helper services
+        "FileMatcher", "FiscalYearMatcher", "JobMatcher",
+        //this service definition
+        SalariesFactory
+      ]);
 
   function FileMatcherFactory() {
     return {
@@ -22,8 +29,8 @@
       else {
         var codes = result.slice(1,3);
         return {
-          shortCode: "FY " + codes.join("/"),
-          sort: codes.join("")
+          code: codes.join(""),
+          fy: "FY " + codes.join("/")
         };
       }
     }
@@ -68,14 +75,14 @@
     };
 
     function match(job) {
-      if(job.BargainingUnit.Code === "ATA") {
+      if(job && job.BargainingUnit && job.BargainingUnit.Code === "ATA") {
         return true;
       }
       return false;
     }
   }
 
-  function SalariesFactory($http, $q, dataUrl, fileMatcher, fiscalYearMatcher, jobMatcher) {
+  function SalariesFactory($window, $http, $q, dataUrl, fileMatcher, fiscalYearMatcher, jobMatcher) {
     return {
       getFiscalYears: getFiscalYears,
       getClosestFiscalYear: getClosestFiscalYear,
@@ -83,17 +90,17 @@
     };
 
     function getFiscalYears() {
-      return $http.get(dataUrl, { cache: true }).then(function(data) {
+      return $http.get(dataUrl, { cache: true }).then(function(response) {
         return $q(function(resolve) {
           var transformed = [];
 
-          angular.forEach(data.data, function(item) {
+          angular.forEach(response.data, function(item) {
             var matched = fileMatcher.match(item);
             if(matched) {
               transformed.push({
-                shortCode: matched.shortCode,
-                sort: matched.sort,
-                url: item.download_url
+                code: matched.code,
+                fy: matched.fy,
+                name: item.name
               });
             }
           });
@@ -107,12 +114,14 @@
       return fiscalYearMatcher.match(years);
     }
 
-    function getJobClasses(url) {
-      return $http.get(url, { cache: true }).then(function(data) {
+    function getJobClasses(path) {
+      var url = [dataUrl,path].join("/");
+      return $http.get(url, { cache: true }).then(function(response) {
         return $q(function(resolve) {
+          var data = angular.fromJson($window.atob(response.data.content));
           var jobs = [];
 
-          angular.forEach(data.data.jobClasses, function(job) {
+          angular.forEach(data.JobClasses, function(job) {
             if(jobMatcher.match(job)) {
               jobs.push(job);
             }

@@ -1,7 +1,7 @@
 "use strict";
 
 beforeEach(module("ataCashout.salaries", ["$provide", function($provide) {
-  $provide.value("DataSourcesUrl", "https://api.example.com");
+  $provide.value("DataUrl", "https://api.example.com");
 }]));
 
 describe("FileMatcher", function() {
@@ -20,8 +20,8 @@ describe("FileMatcher", function() {
   it("should match the fiscal year from input", function() {
     var input = { name: "something-14-15-bla-bla.json" };
     var result = matcher.match(input);
-    expect(result.shortCode).toBe("FY 14/15");
-    expect(result.sort).toBe("1415");
+    expect(result.code).toBe("1415");
+    expect(result.fy).toBe("FY 14/15");
   });
 });
 
@@ -92,15 +92,14 @@ describe("JobMatcher", function() {
 });
 
 describe("Salaries", function() {
-  var salaries;
 
   beforeEach(module(function($provide) {
     $provide.value("FileMatcher", {
       match: function(input) {
         if(input.match) {
           return {
-            shortCode: input.name,
-            sort: input.name,
+            code: input.name,
+            fy: input.name
           };
         }
         else return false;
@@ -114,15 +113,27 @@ describe("Salaries", function() {
     });
   }));
 
-  beforeEach(inject(function(Salaries) {
-    salaries = Salaries;
-  }));
-
   describe("$http", function() {
-    var $httpBackend;
 
-    beforeEach(inject(function(_$httpBackend_) {
+    //mock the $window.atob function for getJobClasses
+    beforeEach(module(function($provide) {
+      $provide.value("$window", {
+        atob: function(input) {
+          return {
+            JobClasses: [
+              { match: true, Title:"class0" },
+              { match: false, Title:"class1" },
+              { match: true, Title:"class2" }
+          ]};
+        }
+      });
+    }));
+
+    var $httpBackend, salaries;
+
+    beforeEach(inject(function(_$httpBackend_, Salaries) {
       $httpBackend = _$httpBackend_;
+      salaries = Salaries;
     }));
 
     afterEach(function() {
@@ -130,49 +141,47 @@ describe("Salaries", function() {
       $httpBackend.verifyNoOutstandingRequest();
     });
 
-    it("should get matching fiscal years", inject(function(DataSourcesUrl) {
-      $httpBackend.when("GET", DataSourcesUrl)
+    it("should get matching fiscal years", inject(function(DataUrl) {
+      $httpBackend.when("GET", DataUrl)
         .respond([
-          {match: true, name:"fy0", download_url:"dl0"},
-          {match: false, name:"fy1", download_url:"dl1"},
-          {match: true, name:"fy2", download_url:"dl2"}
+          {match: true, name:"fy0"},
+          {match: false, name:"fy1"},
+          {match: true, name:"fy2"}
         ]);
 
-      $httpBackend.expectGET(DataSourcesUrl);
+      $httpBackend.expectGET(DataUrl);
+
       salaries.getFiscalYears().then(function(data) {
           expect(data.length).toBe(2);
-          expect(data[0].shortCode).toBe("fy0");
-          expect(data[0].sort).toBe("fy0");
-          expect(data[0].url).toBe("dl0");
-          expect(data[1].shortCode).toBe("fy2");
-          expect(data[1].sort).toBe("fy2");
-          expect(data[1].url).toBe("dl2");
+          expect(data[0].code).toBe("fy0");
+          expect(data[0].fy).toBe("fy0");
+          expect(data[0].name).toBe("fy0");
+          expect(data[1].code).toBe("fy2");
+          expect(data[1].fy).toBe("fy2");
+          expect(data[1].name).toBe("fy2");
       });
+
       $httpBackend.flush();
     }));
 
-    it("should get matching job classes", inject(function(DataSourcesUrl) {
-      $httpBackend.when("GET", DataSourcesUrl)
-        .respond({
-          jobClasses: [
-            { match: true, Title:"class0" },
-            { match: false, Title:"class1" },
-            { match: true, Title:"class2" }
-        ]});
+    it("should get matching job classes", inject(function(DataUrl) {
+      $httpBackend.when("GET", DataUrl + "/file").respond({ data: { content: "somebase64encodedjson" }});
 
-      $httpBackend.expectGET(DataSourcesUrl);
-      salaries.getJobClasses(DataSourcesUrl).then(function(data) {
+      $httpBackend.expectGET(DataUrl+"/file");
+
+      salaries.getJobClasses("file").then(function(data) {
           expect(data.length).toBe(2);
           expect(data[0].Title).toBe("class0");
           expect(data[1].Title).toBe("class2");
       });
+
       $httpBackend.flush();
     }));
   });
 
-  it("should call through to FiscalYearMatcher to get closest", inject(function(FiscalYearMatcher) {
+  it("should call through to FiscalYearMatcher to get closest", inject(function(FiscalYearMatcher,Salaries) {
     spyOn(FiscalYearMatcher, "match");
-    var closest = salaries.getClosestFiscalYear([]);
+    var closest = Salaries.getClosestFiscalYear([]);
     expect(FiscalYearMatcher.match).toHaveBeenCalledWith([]);
   }));
 });

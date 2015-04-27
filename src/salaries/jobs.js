@@ -24,18 +24,8 @@
     };
 
     function decode(content) {
-      var decodedString;
-
-      try {
-         decodedString = $window.atob(content);
-      }
-      catch (e) {
-        console.error(e);
-        decodedString = "";
-      }
-
+      var decodedString = $window.atob(content);
       var data = angular.fromJson(decodedString);
-
       return data.JobClasses || [];
     }
   }

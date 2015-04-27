@@ -27,6 +27,33 @@ describe("BargainingUnitFilter", function() {
   });
 });
 
+describe("JobsDecoder", function() {
+  var decoder;
+
+  beforeEach(inject(function(JobsDecoder) {
+    decoder = JobsDecoder;
+  }));
+
+  it("should throw an error when content isn't base64 data", function() {
+    expect(function() { decoder.decode("&%**#!)("); }).toThrowError(/not correctly encoded/gi);
+  });
+
+  it("should throw an error when decoded content isn't parsable json", inject(function($window) {
+    expect(function() { decoder.decode($window.btoa("not json")); }).toThrowError(/unexpected token/gi);
+  }));
+
+  it("should return [] when decoded json doesn't have JobClasses", inject(function($window) {
+    var content = $window.btoa(angular.toJson({ content: "something" }));
+    expect(decoder.decode(content)).toEqual([]);
+  }));
+
+  it("should return decoded JobClasses", inject(function($window) {
+    var data = { JobClasses: [{ Title: "one" }, { Title: "two" }] };
+    var encoded = $window.btoa(angular.toJson(data));
+    expect(decoder.decode(encoded)).toEqual(data.JobClasses);
+  }));
+});
+
 describe("JobClasses", function() {
 
   beforeEach(module(function($provide) {

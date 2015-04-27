@@ -13,10 +13,10 @@
       "PersonalCashout",
       "SickCashout",
       "VacationCashout",
-      CalcController
+      CalculatorController
     ]);
 
-  function CalcController($scope, holidayCashout, personalCashout, sickCashout, vacationCashout) {
+  function CalculatorController($scope, holidayCashout, personalCashout, sickCashout, vacationCashout) {
     $scope.member = {
       current: { accrued: {} },
       result: { ready: false }

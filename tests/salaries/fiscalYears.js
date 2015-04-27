@@ -4,16 +4,16 @@ beforeEach(module("ataCashout.salaries", ["$provide", function($provide) {
   $provide.value("DataUrl", "https://api.example.com");
 }]));
 
-describe("ClosestFiscalYear", function() {
-  var closestFY;
+describe("ClosestFiscalYearFilter", function() {
+  var filter;
 
-  beforeEach(inject(function(ClosestFiscalYear) {
-    closestFY = ClosestFiscalYear;
+  beforeEach(inject(function(ClosestFiscalYearFilter) {
+    filter = ClosestFiscalYearFilter;
   }));
 
-  it("should match null for null or empty input", function() {
-    expect(closestFY.filter(null)).toBeNull();
-    expect(closestFY.filter([])).toBeNull();
+  it("should return [] for null or empty input", function() {
+    expect(filter(null)).toEqual([]);
+    expect(filter([])).toEqual([]);
   });
 
   describe("when July 1 or later", function() {
@@ -25,7 +25,7 @@ describe("ClosestFiscalYear", function() {
 
     it("should match the last input", function() {
       var fiscalYears = [{id: "first"},{id:"second"},{id:"last"}];
-      var match = closestFY.filter(fiscalYears);
+      var match = filter(fiscalYears);
       expect(match.id).toBe("last");
     });
   });
@@ -39,57 +39,60 @@ describe("ClosestFiscalYear", function() {
 
     it("should match the previous fiscal year if found", function() {
       var fiscalYears = [{id: "first", code: "1415"},{id:"second", code: "1314"},{id:"last", code:"1516"}];
-      expect(closestFY.filter(fiscalYears).id).toBe("first");
+      expect(filter(fiscalYears).id).toBe("first");
     });
 
-    it("should match the last sorted fiscal year if not found", function() {
+    it("should match the last sorted fiscal year if prev not found", function() {
       var fiscalYears = [{id: "first", code: "1314"},{id:"second", code: "1213"},{id:"last", code:"1110"}];
-      expect(closestFY.filter(fiscalYears).id).toBe("first");
+      expect(filter(fiscalYears).id).toBe("first");
     });
   });
 
 });
 
-describe("FileMatcher", function() {
-  var matcher;
+describe("DataFileFilter", function() {
+  var filter;
 
-  beforeEach(inject(function(FileMatcher) {
-    matcher = FileMatcher;
+  beforeEach(inject(function(DataFileFilter) {
+    filter = DataFileFilter;
   }));
 
-  it("should not match when no fiscal year in input", function() {
-    var input = { name: "no-fiscal-year.json" };
-    var result = matcher.match(input);
-    expect(result).toBe(false);
+  it("should return [] when no fiscal year in input", function() {
+    var input = [{ name: "no-fiscal-year.json" }, { name: "wrong-ext-14-15.pdf" }];
+    expect(filter(input)).toEqual([]);
   });
 
-  it("should match the fiscal year from input", function() {
-    var input = { name: "something-14-15-bla-bla.json" };
-    var result = matcher.match(input);
-    expect(result.code).toBe("1415");
-    expect(result.fy).toBe("FY 14/15");
+  it("should return the matching data files from input", function() {
+    var files = [
+      { name: "some-thing-14-15.json" },
+      { name: "12-13-bla-bla.json" },
+      { name: "nope-not-me.json" },
+      { name: "not-json-11-12.pdf" },
+    ];
+    var result = filter(files);
+    expect(result.length).toBe(2);
+    expect(result[0].code).toBe("1415");
+    expect(result[0].fy).toBe("FY 14/15");
+    expect(result[0].name).toBe("some-thing-14-15.json");
+    expect(result[1].code).toBe("1213");
+    expect(result[1].fy).toBe("FY 12/13");
+    expect(result[1].name).toBe("12-13-bla-bla.json");
   });
 });
 
 describe("FiscalYears", function() {
 
   beforeEach(module(function($provide) {
-    $provide.value("FileMatcher", {
-      match: function(input) {
-        if(input.match) {
-          return {
-            code: input.name,
-            fy: input.name
-          };
-        }
-        else return false;
+    $provide.value("DataFileFilter",
+      function(files) {
+        return files.filter(function(file) {
+          return file.match;
+        });
       }
-    });
+    );
 
-    $provide.value("ClosestFiscalYear", {
-      filter: function(years) {
-        return [];
-      }
+    $provide.value("ClosestFiscalYear", function(years) {
+      return [];
     });
   }));
 
@@ -107,32 +110,22 @@ describe("FiscalYears", function() {
 
   it("should get all that match", inject(function(DataUrl) {
     $httpBackend.expectGET(DataUrl)
-      .respond({
-        data: [
-          {match: true, name:"fy0"},
-          {match: false, name:"fy1"},
-          {match: true, name:"fy2"}
-        ]
-      });
-
-    console.log(DataUrl);
+      .respond([
+        {match: true, code:"code0", fy: "fy0", name: "name0"},
+        {match: false, code:"code1", fy: "fy1", name: "name1"},
+        {match: true, code:"code2", fy: "fy2", name: "name2"},
+      ]);
 
     fy.getAll().then(function(data) {
         expect(data.length).toBe(2);
-        expect(data[0].code).toBe("fy0");
+        expect(data[0].code).toBe("code0");
         expect(data[0].fy).toBe("fy0");
-        expect(data[0].name).toBe("fy0");
-        expect(data[1].code).toBe("fy2");
+        expect(data[0].name).toBe("name0");
+        expect(data[1].code).toBe("code2");
         expect(data[1].fy).toBe("fy2");
-        expect(data[1].name).toBe("fy2");
+        expect(data[1].name).toBe("name2");
     });
 
     $httpBackend.flush();
-  }));
-
-  it("should call through to ClosestFiscalYear to filter closest", inject(function(ClosestFiscalYear) {
-    spyOn(ClosestFiscalYear, "filter");
-    var closest = fy.filterClosest([]);
-    expect(ClosestFiscalYear.filter).toHaveBeenCalledWith([]);
   }));
 });

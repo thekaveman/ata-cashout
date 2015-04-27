@@ -3,18 +3,14 @@
 
   angular
     .module("ataCashout.salaries")
-      .factory("FileMatcher", FileMatcherFactory)
-      .factory("ClosestFiscalYear", ClosestFiscalYearFactory)
-      .factory("FiscalYears", ["$http", "$q", "DataUrl", "FileMatcher", "ClosestFiscalYear", FiscalYearsFactory])
+      .filter("ClosestFiscalYear", ClosestFiscalYearFilter)
+      .filter("DataFile", DataFileFilter)
+      .factory("FiscalYears", ["$http", "$q", "DataUrl", "DataFileFilter", "ClosestFiscalYearFilter", FiscalYearsFactory])
 
-  function ClosestFiscalYearFactory() {
-    return {
-      filter: filter
-    };
-
-    function filter(years) {
+  function ClosestFiscalYearFilter() {
+    return function(years) {
       if(years == null || years.length == 0)
-        return null;
+        return [];
 
       years.sort(function(a, b) {
         if(a.code < b.code) return -1;
@@ -44,30 +40,31 @@
 
       //otherwise just return the most recent
       return years[last];
-    }
-  }
-
-  function FileMatcherFactory() {
-    return {
-      match: match
     };
-
-    function match(input) {
-      var result = /(\d{2})-(\d{2})/gi.exec(input.name);
-      if(result === null) {
-        return false;
-      }
-      else {
-        var codes = result.slice(1,3);
-        return {
-          code: codes.join(""),
-          fy: "FY " + codes.join("/")
-        };
-      }
-    }
   }
 
-  function FiscalYearsFactory($http, $q, dataUrl, fileMatcher, closestFY) {
+  function DataFileFilter() {
+
+    return function(files) {
+      var results = [];
+
+      angular.forEach(files, function(file) {
+        var result = /(\d{2})-(\d{2}).*\.json/gi.exec(file.name);
+        if(result) {
+          var codes = result.slice(1,3);
+          results.push({
+            code: codes.join(""),
+            fy: "FY " + codes.join("/"),
+            name: file.name
+          });
+        }
+      });
+
+      return results;
+    };
+  }
+
+  function FiscalYearsFactory($http, $q, dataUrl, dataFileFilter, closestFilter) {
     return {
       getAll: getAll,
       filterClosest: filterClosest
@@ -76,26 +73,14 @@
     function getAll() {
       return $http.get(dataUrl).then(function(response) {
         return $q(function(resolve) {
-          var transformed = [];
-
-          angular.forEach(response.data, function(item) {
-            var matched = fileMatcher.match(item);
-            if(matched) {
-              transformed.push({
-                code: matched.code,
-                fy: matched.fy,
-                name: item.name
-              });
-            }
-          });
-
-          resolve(transformed);
+          var filtered = dataFileFilter(response.data);
+          resolve(filtered);
         });
       });
     }
 
     function filterClosest(years) {
-      return closestFY.filter(years);
+      return closestFilter(years);
     }
   }
 })();

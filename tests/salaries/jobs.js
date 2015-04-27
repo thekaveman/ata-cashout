@@ -4,29 +4,38 @@ beforeEach(module("ataCashout.salaries", ["$provide", function($provide) {
   $provide.value("DataUrl", "https://api.example.com");
 }]));
 
-describe("JobMatcher", function() {
-  var matcher;
+describe("BargainingUnitFilter", function() {
+  var filter;
 
-  beforeEach(inject(function(JobMatcher) {
-    matcher = JobMatcher;
+  beforeEach(inject(function(BargainingUnitFilter) {
+    filter = BargainingUnitFilter;
   }));
 
-  it("should match false when BargainingUnit Code is not ATA", function() {
-    var job = { BargainingUnit: { Code: "NotATA" } };
-    var result = matcher.match(job);
-    expect(result).toBe(false);
+  it("should return [] given null or empty", function() {
+    var result = filter([], "code");
+    expect(result).toEqual([]);
   });
 
-  it("should match true when BargainingUnit Code is ATA", function() {
-    var job = { BargainingUnit:  { Code: "ATA" } };
-    var result = matcher.match(job);
-    expect(result).toBe(true);
+  it("should filter for matching BargainingUnit Codes", function() {
+    var jobs = [
+      { BargainingUnit:  { Code: "match" } },
+      { BargainingUnit:  { Code: "don't match" } },
+      { BargainingUnit:  { Code: "match" } }
+    ];
+    var result = filter(jobs, "match");
+    expect(result.length).toBe(2);
   });
 });
 
 describe("JobClasses", function() {
 
   beforeEach(module(function($provide) {
+    $provide.value("BargainingUnitFilter", function(jobs) {
+      return jobs.filter(function(job) {
+        return job.match;
+      });
+    });
+
     $provide.value("JobsDecoder", {
       decode: function(content) {
         return [
@@ -34,12 +43,6 @@ describe("JobClasses", function() {
           { match: false, Title:"class1" },
           { match: true, Title:"class2" }
         ];
-      }
-    });
-
-    $provide.value("JobMatcher", {
-      match: function(job) {
-        return job.match;
       }
     });
   }));

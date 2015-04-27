@@ -3,9 +3,20 @@
 
   angular
     .module("ataCashout.salaries")
+      .filter("BargainingUnit", BargainingUnitFilter)
       .factory("JobsDecoder", ["$window", JobsDecoderFactory])
-      .factory("JobMatcher", JobMatcherFactory)
-      .factory("JobClasses", ["$http", "$q", "DataUrl", "JobsDecoder", "JobMatcher", JobClassesFactory]);
+      .factory("JobClasses", ["$http", "$q", "DataUrl", "JobsDecoder", "BargainingUnitFilter", JobClassesFactory]);
+
+  function BargainingUnitFilter() {
+    return function (jobs, unit) {
+      return (jobs || []).filter(function(job) {
+        if(job && job.BargainingUnit && job.BargainingUnit.Code === unit) {
+          return true;
+        }
+        return false;
+      });
+    }
+  }
 
   function JobsDecoderFactory($window) {
     return {
@@ -29,20 +40,7 @@
     }
   }
 
-  function JobMatcherFactory() {
-    return {
-      match: match
-    };
-
-    function match(job) {
-      if(job && job.BargainingUnit && job.BargainingUnit.Code === "ATA") {
-        return true;
-      }
-      return false;
-    }
-  }
-
-  function JobClassesFactory($http, $q, dataUrl, decoder, matcher) {
+  function JobClassesFactory($http, $q, dataUrl, decoder, filter) {
     return {
       getAll: getAll
     };
@@ -52,14 +50,7 @@
       return $http.get(url, { cache: true }).then(function(response) {
         return $q(function(resolve) {
           var data = decoder.decode(response.data.content);
-          var jobs = [];
-
-          angular.forEach(data, function(job) {
-            if(matcher.match(job)) {
-              jobs.push(job);
-            }
-          });
-
+          var jobs = filter(data, "ATA");
           resolve(jobs);
         });
       });

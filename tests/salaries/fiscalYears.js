@@ -11,9 +11,9 @@ describe("ClosestFiscalYearFilter", function() {
     filter = ClosestFiscalYearFilter;
   }));
 
-  it("should return [] for null or empty input", function() {
-    expect(filter(null)).toEqual([]);
-    expect(filter([])).toEqual([]);
+  it("should return null for null or empty input", function() {
+    expect(filter(null)).toBeNull();
+    expect(filter([])).toBeNull();
   });
 
   describe("when July 1 or later", function() {

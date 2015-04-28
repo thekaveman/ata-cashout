@@ -10,7 +10,7 @@
   function ClosestFiscalYearFilter() {
     return function(years) {
       if(years == null || years.length == 0)
-        return [];
+        return null;
 
       years.sort(function(a, b) {
         if(a.code < b.code) return -1;
@@ -67,7 +67,7 @@
   function FiscalYearsFactory($http, $q, dataUrl, dataFileFilter, closestFilter) {
     return {
       getAll: getAll,
-      filterClosest: filterClosest
+      findClosest: findClosest
     };
 
     function getAll() {
@@ -79,7 +79,7 @@
       });
     }
 
-    function filterClosest(years) {
+    function findClosest(years) {
       return closestFilter(years);
     }
   }

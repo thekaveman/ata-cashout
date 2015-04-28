@@ -2,7 +2,7 @@
   "use strict";
 
   angular
-    .module("ataCashout.vacation", ["ataCashout.common"])
+    .module("ataCashout.vacation")
       .factory("VacationCashout", ["Members", "DayHours", VacationCashoutFactory]);
 
   function VacationCashoutFactory(members, dayHours) {

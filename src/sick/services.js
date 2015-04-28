@@ -2,7 +2,7 @@
   "use strict";
 
   angular
-    .module("ataCashout.sick", ["ataCashout.common"])
+    .module("ataCashout.sick")
       .factory("SickCashoutAmounts", SickCashoutAmounts)
       .factory("SickCashout", ["Members", "DayHours", "SickCashoutAmounts", SickCashoutFactory]);
 

@@ -2,10 +2,10 @@
   "use strict";
 
   angular
-    .module("ataCashout.common", [])
+    .module("ataCashout.common")
       .value("HoursInDay", 8)
-       .factory("DayHours", ["HoursInDay", DayHoursFactory])
-       .factory("Members", MembersFactory);
+      .factory("DayHours", ["HoursInDay", DayHoursFactory])
+      .factory("Members", MembersFactory);
 
   function DayHoursFactory(hoursInDay) {
     return {

@@ -2,13 +2,12 @@
   "use strict";
 
   angular
-    .module("ataCashout", [
-      "ataCashout.common",
+    .module("ataCashout.calculator", [
       "ataCashout.holiday",
       "ataCashout.personal",
       "ataCashout.salaries",
       "ataCashout.sick",
-      "ataCashout.vacation",
-      "ataCashout.calculator"
+      "ataCashout.vacation"
     ]);
+
 })();

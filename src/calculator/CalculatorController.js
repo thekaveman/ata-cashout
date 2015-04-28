@@ -2,19 +2,15 @@
   "use strict";
 
   angular
-    .module("ataCashout.calculator", [
-      "ataCashout.holiday",
-      "ataCashout.personal",
-      "ataCashout.sick",
-      "ataCashout.vacation",
-    ]).controller("CalculatorController", [
-      "$scope",
-      "HolidayCashout",
-      "PersonalCashout",
-      "SickCashout",
-      "VacationCashout",
-      CalculatorController
-    ]);
+    .module("ataCashout.calculator")
+      .controller("CalculatorController", [
+        "$scope",
+        "HolidayCashout",
+        "PersonalCashout",
+        "SickCashout",
+        "VacationCashout",
+        CalculatorController
+      ]);
 
   function CalculatorController($scope, holidayCashout, personalCashout, sickCashout, vacationCashout) {
     $scope.member = {

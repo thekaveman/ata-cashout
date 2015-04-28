@@ -1,13 +1,11 @@
 module.exports = function(grunt) {
   var srcGlobs = [
+    "src/common/module.js",
     "src/common/*.js",
-    "src/salaries/common.js",
-    "src/salaries/*.js",
+    "src/**/module.js",
+    "!src/calculator/module.js",
+    "src/calculator/module.js",
     "src/**/*.js",
-    "!src/app.js",
-    "!src/calculator/*.js",
-    "src/calculator/*.js",
-    "src/app.js"
   ];
 
   var devTarget = "src/ataCashout.js";

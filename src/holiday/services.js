@@ -2,7 +2,7 @@
   "use strict";
 
   angular
-    .module("ataCashout.holiday", ["ataCashout.common"])
+    .module("ataCashout.holiday")
       .value("CashableHolidayHours", 8)
       .factory("HolidayCashout", ["Members", "CashableHolidayHours", HolidayCashoutFactory]);
 

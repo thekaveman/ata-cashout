@@ -13,7 +13,7 @@
       scope: {
         member: "="
       },
-      templateUrl: "calculator/accruals-panel.html"
+      templateUrl: "calculator/accrualsPanel.html"
     };
   }
 
@@ -23,7 +23,7 @@
       scope: {
         member: "="
       },
-      templateUrl: "calculator/job-panel.html"
+      templateUrl: "calculator/jobPanel.html"
     };
   }
 
@@ -33,7 +33,7 @@
       scope: {
         result: "="
       },
-      templateUrl: "calculator/results-panel.html"
+      templateUrl: "calculator/resultsPanel.html"
     };
   }
 

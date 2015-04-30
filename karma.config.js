@@ -13,14 +13,9 @@ module.exports = function(config) {
       'node_modules/jquery/dist/jquery.min.js',
       'node_modules/angular/angular.js',
       'node_modules/angular-mocks/angular-mocks.js',
-      "src/hours/module.js",
-      "src/hours/*.js",
-      "src/members/module.js",
-      "src/members/*.js",
       "src/**/module.js",
-      "!src/calculator/module.js",
-      "src/calculator/module.js",
       "src/**/*.js",
+      "tests/**/*.js"
     ],
     // list of files to exclude
     exclude: [],

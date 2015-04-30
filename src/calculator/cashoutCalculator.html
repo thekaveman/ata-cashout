@@ -1,0 +1,15 @@
+<div class="row" ng-controller="CalculatorController">
+  <div class="col-sm-6">
+    <job-panel member="member.current"></job-panel>
+    <accruals-panel member="member.current"></accruals-panel>
+    <button class="btn btn-success" ng-click="calc.go()">Go</button>
+    <button class="btn btn-danger" ng-click="calc.reset()">Reset</button>
+  </div>
+  <div class="col-sm-6">
+    <div class="well">
+      <strong>member</strong>
+      <pre>{{member.current | json}}</pre>
+    </div>
+    <results-panel result="member.result"/>
+  </div>
+</div>

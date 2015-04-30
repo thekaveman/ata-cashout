@@ -5,7 +5,8 @@
     .module("ataCashout.salaries")
       .filter("BargainingUnit", BargainingUnitFilter)
       .factory("JobsDecoder", ["$window", JobsDecoderFactory])
-      .factory("JobClasses", ["$http", "$q", "DataUrl", "JobsDecoder", "BargainingUnitFilter", JobClassesFactory]);
+      .factory("JobClasses", ["$http", "$q", "DataUrl", "JobsDecoder", "BargainingUnitFilter", JobClassesFactory])
+      .directive("jobPanel", JobPanel);
 
   function BargainingUnitFilter() {
     return function (jobs, unit) {
@@ -46,4 +47,15 @@
       });
     }
   }
+
+  function JobPanel() {
+    return {
+      restrict: "E",
+      scope: {
+        member: "="
+      },
+      templateUrl: "salaries/jobPanel.html"
+    };
+  }
+
 })();

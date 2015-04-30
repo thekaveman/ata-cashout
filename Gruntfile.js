@@ -1,7 +1,9 @@
 module.exports = function(grunt) {
   var srcGlobs = [
-    "src/common/module.js",
-    "src/common/*.js",
+    "src/hours/module.js",
+    "src/hours/*.js",
+    "src/members/module.js",
+    "src/members/*.js",
     "src/**/module.js",
     "!src/calculator/module.js",
     "src/calculator/module.js",

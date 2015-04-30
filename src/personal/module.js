@@ -2,6 +2,6 @@
   "use strict";
 
   angular
-    .module("ataCashout.personal", ["ataCashout.common"]);
+    .module("ataCashout.personal", ["ataCashout.hours", "ataCashout.members"]);
 
 })();

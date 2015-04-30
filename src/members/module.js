@@ -2,6 +2,6 @@
   "use strict";
 
   angular
-    .module("ataCashout.common", []);
+    .module("ataCashout.members", []);
 
 })();

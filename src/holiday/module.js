@@ -2,6 +2,6 @@
   "use strict";
 
   angular
-    .module("ataCashout.holiday", ["ataCashout.common"]);
+    .module("ataCashout.holiday", ["ataCashout.members"]);
 
 })();

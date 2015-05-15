@@ -74,7 +74,7 @@ module.exports = function(grunt) {
     watch: {
       main: {
         files: ["Gruntfile.js", "karma.config.js", "src/**/*.html", "src/**/*.js"],
-        tasks: ["all"],
+        tasks: ["default"],
         options: {
           debounceDelay: 3000,
           spawn: false
@@ -89,7 +89,8 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-processhtml');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-clean');
+  grunt.loadNpmTasks('grunt-contrib-jshint');
 
-  grunt.registerTask("all", ["concat:dist", "uglify", "copy", "processhtml", "clean"])
-  grunt.registerTask("default", ["clean", "concat:dev"]);
+  grunt.registerTask("all", ["concat:dist", "uglify", "copy", "processhtml", "clean"]);
+  grunt.registerTask("default", ["clean", "concat"]);
 };

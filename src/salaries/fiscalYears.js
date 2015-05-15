@@ -5,7 +5,7 @@
     .module("ataCashout.salaries")
       .filter("ClosestFiscalYear", ClosestFiscalYearFilter)
       .filter("DataFile", DataFileFilter)
-      .factory("FiscalYears", ["$http", "$q", "DataUrl", "DataFileFilter", "ClosestFiscalYearFilter", FiscalYearsFactory])
+      .factory("FiscalYears", ["$http", "DataUrl", "DataFileFilter", "ClosestFiscalYearFilter", FiscalYearsFactory])
 
   function ClosestFiscalYearFilter() {
     return function(years) {
@@ -64,23 +64,18 @@
     };
   }
 
-  function FiscalYearsFactory($http, $q, dataUrl, dataFileFilter, closestFilter) {
+  function FiscalYearsFactory($http, dataUrl, dataFileFilter, closestFilter) {
     return {
-      getAll: getAll,
       findClosest: findClosest
     };
 
-    function getAll() {
-      return $http.get(dataUrl).then(function(response) {
-        return $q(function(resolve) {
-          var filtered = dataFileFilter(response.data);
-          resolve(filtered);
-        });
-      });
-    }
-
-    function findClosest(years) {
-      return closestFilter(years);
+    function findClosest() {
+      return $http.get(dataUrl).then(
+        function(response) {
+          var years = dataFileFilter(response.data);
+          return closestFilter(years);
+        }
+      );
     }
   }
 })();

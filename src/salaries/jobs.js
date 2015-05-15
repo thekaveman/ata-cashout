@@ -5,7 +5,7 @@
     .module("ataCashout.salaries")
       .filter("BargainingUnit", BargainingUnitFilter)
       .factory("JobsDecoder", ["$window", JobsDecoderFactory])
-      .factory("JobClasses", ["$http", "$q", "DataUrl", "JobsDecoder", "BargainingUnitFilter", JobClassesFactory])
+      .factory("JobClasses", ["$http", "DataUrl", "JobsDecoder", "BargainingUnitFilter", JobClassesFactory])
       .directive("jobPanel", JobPanel);
 
   function BargainingUnitFilter() {
@@ -31,20 +31,19 @@
     }
   }
 
-  function JobClassesFactory($http, $q, dataUrl, decoder, filter) {
+  function JobClassesFactory($http, dataUrl, decoder, filter) {
     return {
       getAll: getAll
     };
 
     function getAll(file) {
       var url = [dataUrl,file].join("/");
-      return $http.get(url, { cache: true }).then(function(response) {
-        return $q(function(resolve) {
+      return $http.get(url).then(
+        function(response) {
           var data = decoder.decode(response.data.content);
-          var jobs = filter(data, "ATA");
-          resolve(jobs);
-        });
-      });
+          return filter(data, "ATA");
+        }
+      );
     }
   }
 

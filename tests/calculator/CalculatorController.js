@@ -42,6 +42,15 @@ describe("CalculatorController", function() {
         scope.calc.reset();
         expect(scope.member.result).toEqual({ ready: false });
       });
+
+      it("should broadcast the reset message", function() {
+        var messageReceived = false;
+        scope.$on("reset", function() { messageReceived = true; });
+
+        scope.calc.reset();
+
+        expect(messageReceived).toBe(true);
+      });
     });
   });
 

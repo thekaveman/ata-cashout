@@ -128,10 +128,36 @@ describe("Jobs", function() {
       $controller("JobPanelController", { $scope: scope, FiscalYears: fyMock, JobClasses: jobsMock });
     }));
 
+    it("should initialize with a false selectedJob", function() {
+      expect(scope.jobPanel.selectedJob).toBe(false);
+    });
+
     it("should get all job classes", function() {
       expect(fyMock.findClosest).toHaveBeenCalled();
       expect(jobsMock.getAll).toHaveBeenCalled();
       expect(scope.jobPanel.jobs).toEqual([{ Title: "job0" }, { Title: "job1" }]);
+    });
+
+    describe("hasSelection", function() {
+      it("should return true if selectedJob is truthy", function() {
+        scope.jobPanel.selectedJob = { Title: "some job" };
+        expect(scope.jobPanel.hasSelection()).toBe(true);
+      });
+
+      it("should return false if selectedJob is falsy", function() {
+        scope.jobPanel.selectedJob = false;
+        expect(scope.jobPanel.hasSelection()).toBe(false);
+      });
+    });
+
+    describe("onJobSelect", function() {
+      it("should reset the member's payRate", function() {
+        scope.member = { payRate: 14.77 };
+
+        scope.jobPanel.onJobSelect();
+
+        expect(scope.member.payRate).toBeUndefined();
+      });
     });
   });
 });

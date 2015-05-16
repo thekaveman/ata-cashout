@@ -38,7 +38,7 @@
 
     function getAll(file) {
       var url = [dataUrl,file].join("/");
-      return $http.get(url).then(
+      return $http.get(url, {cache:true}).then(
         function(response) {
           var data = decoder.decode(response.data.content);
           return filter(data, "ATA");

@@ -70,7 +70,7 @@
     };
 
     function findClosest() {
-      return $http.get(dataUrl).then(
+      return $http.get(dataUrl, {cache:true}).then(
         function(response) {
           var years = dataFileFilter(response.data);
           return closestFilter(years);

@@ -128,8 +128,8 @@ describe("Jobs", function() {
       $controller("JobPanelController", { $scope: scope, FiscalYears: fyMock, JobClasses: jobsMock });
     }));
 
-    it("should initialize with a false selectedJob", function() {
-      expect(scope.jobPanel.selectedJob).toBe(false);
+    it("should initialize with a falsy selectedJob", function() {
+      expect(scope.jobPanel.selectedJob).toBeFalsy();
     });
 
     it("should get all job classes", function() {
@@ -145,7 +145,7 @@ describe("Jobs", function() {
       });
 
       it("should return false if selectedJob is falsy", function() {
-        scope.jobPanel.selectedJob = false;
+        scope.jobPanel.selectedJob = undefined;
         expect(scope.jobPanel.hasSelection()).toBe(false);
       });
     });

@@ -52,13 +52,13 @@
     //local data for the directive
     $scope.jobPanel = {
       jobs: [],
-      selectedJob: false,
+      selectedJob: undefined,
       hasSelection: hasSelection,
       onJobSelect: onJobSelect
     };
     //listen for the reset even from the parent
     $scope.$on("reset", function(event) {
-      $scope.jobPanel.selectedJob = false;
+      $scope.jobPanel.selectedJob = undefined;
     });
 
     //get the list of jobs from github

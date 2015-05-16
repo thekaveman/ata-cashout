@@ -94,4 +94,44 @@ describe("Jobs", function() {
       });
     }));
   });
+
+  describe("JobPanelController", function() {
+    var scope, fyMock, jobsMock;
+
+    beforeEach(inject(function($rootScope, $controller) {
+      fyMock = {
+       findClosest: function() {
+          return {
+            then: function(callback) {
+              return callback({ name: "closest" });
+            }
+          };
+        }
+      };
+
+      jobsMock = {
+        getAll: function(file) {
+          return {
+            then: function(callback) {
+              return callback([
+                { Title: "job0" }, { Title: "job1" }
+              ]);
+            }
+          };
+        }
+      };
+
+      spyOn(fyMock, "findClosest").and.callThrough();
+      spyOn(jobsMock, "getAll").and.callThrough();
+
+      scope = $rootScope.$new();
+      $controller("JobPanelController", { $scope: scope, FiscalYears: fyMock, JobClasses: jobsMock });
+    }));
+
+    it("should get all job classes", function() {
+      expect(fyMock.findClosest).toHaveBeenCalled();
+      expect(jobsMock.getAll).toHaveBeenCalled();
+      expect(scope.jobPanel.jobs).toEqual([{ Title: "job0" }, { Title: "job1" }]);
+    });
+  });
 });

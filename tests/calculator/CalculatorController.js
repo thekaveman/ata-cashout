@@ -4,14 +4,14 @@ describe("CalculatorController", function() {
 
   beforeEach(module("ataCashout.calculator"));
 
+  var scope;
+
+  beforeEach(inject(function($rootScope, $controller) {
+    scope = $rootScope.$new();
+    $controller("CalculatorController", { $scope: scope });
+  }));
+
   describe("member", function() {
-    var scope;
-
-    beforeEach(inject(function($rootScope, $controller) {
-      scope = $rootScope.$new();
-      $controller("CalculatorController", { $scope: scope });
-    }));
-
     it("should initialize with a current with empty accrued", function() {
       expect(scope.member.current).toEqual({ accrued: {} });
     });
@@ -21,54 +21,7 @@ describe("CalculatorController", function() {
     });
   });
 
-  describe("jobs", function() {
-    var scope, fyMock, jobsMock;
-
-    beforeEach(inject(function($rootScope, $controller) {
-      fyMock = {
-       findClosest: function() {
-          return {
-            then: function(callback) {
-              return callback({ name: "closest" });
-            }
-          };
-        }
-    };
-
-      jobsMock = {
-        getAll: function(file) {
-          return {
-            then: function(callback) {
-              return callback([
-                { Title: "job0" }, { Title: "job1" }
-              ]);
-            }
-          };
-        }
-      };
-
-      spyOn(fyMock, "findClosest").and.callThrough();
-      spyOn(jobsMock, "getAll").and.callThrough();
-
-      scope = $rootScope.$new();
-      $controller("CalculatorController", { $scope: scope, FiscalYears: fyMock, JobClasses: jobsMock });
-    }));
-
-    it("should get all job classes", function() {
-      expect(fyMock.findClosest).toHaveBeenCalled();
-      expect(jobsMock.getAll).toHaveBeenCalled();
-      expect(scope.jobs).toEqual([{ Title: "job0" }, { Title: "job1" }]);
-    });
-  });
-
   describe("calc", function() {
-    var scope;
-
-    beforeEach(inject(function($rootScope, $controller) {
-      scope = $rootScope.$new();
-      $controller("CalculatorController", { $scope: scope });
-    }));
-
     describe("go", function() {
       it("should make the member result ready", function() {
         expect(scope.member.result.ready).toBe(false);

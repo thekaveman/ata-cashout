@@ -31,7 +31,7 @@ module.exports = function(grunt) {
           "node_modules/jquery/dist/jquery.min.js",
           "node_modules/bootstrap/dist/js/bootstrap.min.js",
           "node_modules/angular/angular.min.js",
-          "node_modules/angular-*/angular-*.min.js",
+          "bower_components/angular-ui-select/dist/select.min.js"
         ]
       }
     },
@@ -51,7 +51,10 @@ module.exports = function(grunt) {
       },
       styles: {
         dest: "dist/vendor.min.css",
-        src: ["node_modules/bootstrap/dist/css/bootstrap.min.css"],
+        src: [
+          "node_modules/bootstrap/dist/css/bootstrap.min.css",
+          "bower_components/angular-ui-select/dist/select.min.css"
+        ],
       }
     },
     //post-process HTML

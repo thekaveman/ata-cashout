@@ -1,5 +1,20 @@
 module.exports = function(grunt) {
-  var srcGlobs = [
+  var vendor = {
+    scripts: [
+      "bower_components/jquery/dist/jquery.min.js",
+      "bower_components/bootstrap/dist/js/bootstrap.min.js",
+      "bower_components/angular/angular.min.js",
+      "bower_components/angular-ui-select/dist/select.min.js"
+    ],
+    styles: [
+      "bower_components/bootstrap/dist/css/bootstrap.min.css",
+      "bower_components/angular-ui-select/dist/select.min.css"
+    ]
+  };
+
+  var devTarget = "src/ataCashout.js";
+
+  var app = [
     "src/hours/module.js",
     "src/hours/*.js",
     "src/members/module.js",
@@ -7,31 +22,28 @@ module.exports = function(grunt) {
     "src/**/module.js",
     "!src/calculator/module.js",
     "src/calculator/module.js",
+    "!" + devTarget,
     "src/**/*.js",
   ];
-
-  var devTarget = "src/ataCashout.js";
 
   // Project configuration.
   grunt.initConfig({
     pkg: grunt.file.readJSON("package.json"),
     //clean up partial build results
     clean: {
-      def: [devTarget, "dist/*.js", "!dist/*.min.js", "dist/*.css", "!dist/*.min.css"]
+      dev: devTarget,
+      dist: ["dist/*.*"]
     },
     //concatenate javascript files
     concat: {
       dev: {
-        dest: devTarget,
-        src: srcGlobs
+        src: app,
+        dest: devTarget
       },
-      dist: {
-        dest: "dist/vendor.min.js",
-        src: [
-          "node_modules/jquery/dist/jquery.min.js",
-          "node_modules/bootstrap/dist/js/bootstrap.min.js",
-          "node_modules/angular/angular.min.js",
-          "bower_components/angular-ui-select/dist/select.min.js"
+      vendor: {
+        files: [
+          { src: vendor.scripts, dest: "dist/vendor.min.js" },
+          { src: vendor.styles, dest: "dist/vendor.min.css" }
         ]
       }
     },
@@ -48,35 +60,28 @@ module.exports = function(grunt) {
         cwd: "src/",
         src: "**/*.html",
         dest: "dist/"
-      },
-      styles: {
-        dest: "dist/vendor.min.css",
-        src: [
-          "node_modules/bootstrap/dist/css/bootstrap.min.css",
-          "bower_components/angular-ui-select/dist/select.min.css"
-        ],
       }
     },
     //post-process HTML
     processhtml: {
       dist: {
-        dest: "dist/index.html",
-        src: "src/index.html"
+        src: "src/index.html",
+        dest: "dist/index.html"
       }
     },
     //minify
     uglify: {
       dist: {
         files: [
-          { dest: "dist/app.min.js", src: srcGlobs },
-          { dest: "dist/app.min.css", src: "src/app.css" }
+          { src: devTarget, dest: "dist/app.min.js" },
+          { src: "src/app.css", dest: "dist/app.min.css" }
         ]
       }
     },
     //watch for changes, and run other tasks on detection
     watch: {
       main: {
-        files: ["Gruntfile.js", "karma.config.js", "src/**/*.html", "src/**/*.js"],
+        files: ["src/**/*.html"].concat(app),
         tasks: ["default"],
         options: {
           debounceDelay: 3000,
@@ -86,14 +91,15 @@ module.exports = function(grunt) {
     }
   });
 
+  grunt.loadNpmTasks("grunt-contrib-clean");
   grunt.loadNpmTasks("grunt-contrib-concat");
+  grunt.loadNpmTasks("grunt-contrib-copy");
   grunt.loadNpmTasks("grunt-contrib-uglify");
   grunt.loadNpmTasks("grunt-contrib-watch");
-  grunt.loadNpmTasks('grunt-processhtml');
-  grunt.loadNpmTasks('grunt-contrib-copy');
-  grunt.loadNpmTasks('grunt-contrib-clean');
-  grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks("grunt-processhtml");
 
-  grunt.registerTask("all", ["concat:dist", "uglify", "copy", "processhtml", "clean"]);
-  grunt.registerTask("default", ["clean", "concat"]);
+  grunt.registerTask("dev", ["clean:dev", "concat:dev"]);
+  grunt.registerTask("dist", ["clean", "concat", "uglify", "copy", "processhtml"]);
+
+  grunt.registerTask("default", "dev");
 };

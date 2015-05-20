@@ -1,10 +1,8 @@
 "use strict";
 
-beforeEach(module("ataCashout.personal", function($provide) {
-
-}));
-
 describe("PersonalCashout", function() {
+  beforeEach(module("ataCashout.personal"));
+
   var member;
 
   beforeEach(function() {

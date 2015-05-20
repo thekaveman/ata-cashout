@@ -1,8 +1,8 @@
 "use strict";
 
-beforeEach(module("ataCashout.members"));
-
 describe("Members", function() {
+  beforeEach(module("ataCashout.members"));
+
   var members;
 
   beforeEach(inject(function(Members) {

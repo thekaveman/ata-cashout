@@ -1,10 +1,10 @@
 "use strict";
 
-beforeEach(module("ataCashout.sick", function($provide) {
-  $provide.value("HoursInDay", 2);
-}));
-
 describe("SickCashout", function() {
+  beforeEach(module("ataCashout.sick", function($provide) {
+    $provide.value("HoursInDay", 2);
+  }));
+
   var member, sickCashout;
 
   it("should initialize members on evaluation", inject(function(Members, SickCashout) {

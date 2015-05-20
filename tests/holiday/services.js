@@ -1,10 +1,10 @@
 "use strict";
 
-beforeEach(module("ataCashout.holiday", function($provide) {
-  $provide.value("CashableHolidayHours", 2);
-}));
-
 describe("HolidayCashout", function() {
+  beforeEach(module("ataCashout.holiday", function($provide) {
+    $provide.value("CashableHolidayHours", 2);
+  }));
+
   var holidayCashout, member;
 
   beforeEach(inject(function(HolidayCashout) {

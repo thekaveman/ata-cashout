@@ -40,6 +40,6 @@ module.exports = function(config) {
     browsers: ["Chrome"],
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    singleRun: false
+    singleRun: true
   });
 };

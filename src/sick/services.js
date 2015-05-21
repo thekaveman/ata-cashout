@@ -4,14 +4,15 @@
   angular
     .module("ataCashout.sick")
       .factory("SickCashoutAmounts", SickCashoutAmounts)
-      .factory("SickCashout", ["DayHours", "Members", "SickCashoutAmounts", SickCashoutFactory]);
+      .factory("SickCashoutBank", SickCashoutBank)
+      .factory("SickCashout", ["DayHours", "Members", "SickCashoutAmounts", "SickCashoutBank", SickCashoutFactory]);
 
   function SickCashoutAmounts() {
     //the 'amounts' arrays below
     //represent cashable days
     //indexed by used days
     return [{
-      minYears: 0,
+      minYears: 1,
       maxYears: 9,
       amounts: [6,6,6,5,4,3,2,1]
     },{
@@ -21,14 +22,20 @@
    }];
   }
 
-  function SickCashoutFactory(hours, members, amounts) {
+  function SickCashoutBank() {
+    return {
+      minBalance: 12
+    };
+  }
+
+  function SickCashoutFactory(hours, members, amounts, bank) {
     return {
       evaluate: evaluate
     };
 
     function evaluate(member) {
       member = members.initialize(member);
-      var cashable = member.accrued.sick < 12
+      var cashable = member.accrued.sick < bank.minBalance
                    ? 0
                    : getCashableHours(member.serviceYears, member.used.sick);
       return {

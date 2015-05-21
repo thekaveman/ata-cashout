@@ -3,21 +3,53 @@
 
   angular
     .module("ataCashout.vacation")
-      .factory("VacationCashout", ["DayHours", "Members", VacationCashoutFactory]);
+      .factory("VacationCashoutAmounts", VacationCashoutAmounts)
+      .factory("VacationCashout", ["DayHours", "Members", "VacationCashoutAmounts", VacationCashoutFactory]);
 
-  function VacationCashoutFactory(hours, members) {
+  function VacationCashoutAmounts() {
+    return [{
+      minYears: 0,
+      maxYears: 9,
+      amount: 40
+    },{
+      minYears: 10,
+      maxYears: 14,
+      amount: 60
+   },{
+      minYears: 15,
+      maxYears: Number.MAX_VALUE,
+      amount: 80
+   }];
+  }
+
+  function VacationCashoutFactory(hours, members, amounts) {
     return {
       evaluate: evaluate
     };
 
     function evaluate(member) {
       member = members.initialize(member);
-      var cashable = hours.toHours(hours.toWholeDays(member.accrued.vacation));
+      var wholeHours = hours.toHours(hours.toWholeDays(member.accrued.vacation));
+      var amount = findAmount(member.serviceYears);
+      var cashable = wholeHours <= amount ? wholeHours : amount;
+
       return {
         accrued: member.accrued.vacation,
         cashable: cashable,
         diff: member.accrued.vacation - cashable
       };
+    }
+
+    function findAmount(years) {
+      var filtered = amounts.filter(function(amt) {
+        return amt.minYears <= years && years <= amt.maxYears;
+      });
+
+      if(filtered.length == 1) {
+        return filtered[0].amount;
+      }
+
+      return 0;
     }
   }
 })();

@@ -3,27 +3,18 @@
 
   angular
     .module("ataCashout.calculator")
-      .directive("accrualsPanel", accrualsPanel)
-      .directive("jobPanel", jobPanel)
+      .directive("cashoutCalculator", cashoutCalculator)
       .directive("resultsPanel", resultsPanel);
 
-  function accrualsPanel() {
+  function cashoutCalculator() {
     return {
       restrict: "E",
       scope: {
-        member: "="
+        jobs: "=",
+        member: "=",
+        result: "="
       },
-      templateUrl: "calculator/accruals-panel.html"
-    };
-  }
-
-  function jobPanel() {
-    return {
-      restrict: "E",
-      scope: {
-        member: "="
-      },
-      templateUrl: "calculator/job-panel.html"
+      templateUrl: "calculator/cashoutCalculator.html"
     };
   }
 
@@ -33,7 +24,7 @@
       scope: {
         result: "="
       },
-      templateUrl: "calculator/results-panel.html"
+      templateUrl: "calculator/resultsPanel.html"
     };
   }
 

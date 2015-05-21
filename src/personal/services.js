@@ -2,7 +2,7 @@
   "use strict";
 
   angular
-    .module("ataCashout.personal", ["ataCashout.common"])
+    .module("ataCashout.personal")
       .value("ProfessionalIncentiveHours", 8)
       .factory("PersonalCashoutAmounts", ["DayHours", "ProfessionalIncentiveHours", PersonalCashoutAmounts])
       .factory("PersonalCashout", ["Members", "PersonalCashoutAmounts", PersonalCashoutFactory]);

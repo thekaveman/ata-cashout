@@ -2,25 +2,8 @@
   "use strict";
 
   angular
-    .module("ataCashout.common", [])
-      .value("HoursInDay", 8)
-       .factory("DayHours", ["HoursInDay", DayHoursFactory])
-       .factory("Members", MembersFactory);
-
-  function DayHoursFactory(hoursInDay) {
-    return {
-      toWholeDays: toWholeDays,
-      toHours: toHours
-    };
-
-    function toWholeDays(hours) {
-      return Math.floor(hours / hoursInDay);
-    }
-
-    function toHours(days) {
-      return days * hoursInDay;
-    }
-  }
+    .module("ataCashout.members")
+      .factory("Members", MembersFactory);
 
   function MembersFactory() {
     return {
@@ -57,4 +40,5 @@
       return member;
     }
   }
+
 })();

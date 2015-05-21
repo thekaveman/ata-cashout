@@ -2,9 +2,9 @@
   "use strict";
 
   angular
-    .module("ataCashout.sick", ["ataCashout.common"])
+    .module("ataCashout.sick")
       .factory("SickCashoutAmounts", SickCashoutAmounts)
-      .factory("SickCashout", ["Members", "DayHours", "SickCashoutAmounts", SickCashoutFactory]);
+      .factory("SickCashout", ["DayHours", "Members", "SickCashoutAmounts", SickCashoutFactory]);
 
   function SickCashoutAmounts() {
     //the 'amounts' arrays below
@@ -21,7 +21,7 @@
    }];
   }
 
-  function SickCashoutFactory(members, dayHours, amounts) {
+  function SickCashoutFactory(hours, members, amounts) {
     return {
       evaluate: evaluate
     };
@@ -50,10 +50,10 @@
     }
 
     function findAmount(amounts, usedHours) {
-      var usedDays = dayHours.toWholeDays(usedHours);
+      var usedDays = hours.toWholeDays(usedHours);
       if (usedDays < amounts.length) {
         var cashableDays = amounts[usedDays];
-        return dayHours.toHours(cashableDays);
+        return hours.toHours(cashableDays);
       }
       return 0;
     }

@@ -1,0 +1,19 @@
+{
+  "name": "ata-cashout",
+  "version": "1.0.0",
+  "authors": ["Kegan Maher"],
+  "description": "AngularJS leave time cash out calculator for ATA",
+  "license": "MIT",
+  "main": "src/app.js",
+  "ignore": [
+    "**/.*",
+    "bower_components",
+    "node_modules",
+    "tests"
+  ],
+  "moduleType": ["globals"],
+  "dependencies": {
+    "angular-ui-select": "~0.11.2",
+    "bootstrap": "~3.3.4"
+  }
+}

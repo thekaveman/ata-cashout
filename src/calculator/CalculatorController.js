@@ -2,28 +2,25 @@
   "use strict";
 
   angular
-    .module("ataCashout.calculator", [
-      "ataCashout.holiday",
-      "ataCashout.personal",
-      "ataCashout.sick",
-      "ataCashout.vacation",
-    ]).controller("CalculatorController", [
-      "$scope",
-      "HolidayCashout",
-      "PersonalCashout",
-      "SickCashout",
-      "VacationCashout",
-      CalcController
-    ]);
+    .module("ataCashout.calculator")
+      .controller("CalculatorController", [
+        "$scope",
+        "HolidayCashout",
+        "PersonalCashout",
+        "SickCashout",
+        "VacationCashout",
+        CalculatorController
+      ]);
 
-  function CalcController($scope, holidayCashout, personalCashout, sickCashout, vacationCashout) {
-    $scope.member = {
-      current: { accrued: {} },
-      result: { ready: false }
-    };
+  function CalculatorController($scope, holidayCashout, personalCashout, sickCashout, vacationCashout) {
     $scope.calc = {
       go: go,
       reset: reset
+    };
+
+    $scope.member = {
+      current: { accrued: {} },
+      result: { ready: false }
     };
 
     function go() {
@@ -42,6 +39,8 @@
         current: { accrued: {} },
         result: { ready: false }
       };
+
+      $scope.$broadcast("reset");
     }
   }
 })();

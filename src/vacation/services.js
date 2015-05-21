@@ -2,17 +2,17 @@
   "use strict";
 
   angular
-    .module("ataCashout.vacation", ["ataCashout.common"])
-      .factory("VacationCashout", ["Members", "DayHours", VacationCashoutFactory]);
+    .module("ataCashout.vacation")
+      .factory("VacationCashout", ["DayHours", "Members", VacationCashoutFactory]);
 
-  function VacationCashoutFactory(members, dayHours) {
+  function VacationCashoutFactory(hours, members) {
     return {
       evaluate: evaluate
     };
 
     function evaluate(member) {
       member = members.initialize(member);
-      var cashable = dayHours.toHours(dayHours.toWholeDays(member.accrued.vacation));
+      var cashable = hours.toHours(hours.toWholeDays(member.accrued.vacation));
       return {
         accrued: member.accrued.vacation,
         cashable: cashable,

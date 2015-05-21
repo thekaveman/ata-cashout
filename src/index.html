@@ -4,7 +4,8 @@
     <meta charset="utf-8" />
 
     <!-- build:css:dist vendor.min.css -->
-    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="../bower_components/angular-ui-select/dist/select.css" />
     <!-- /build -->
 
     <!-- build:css:dist app.min.css -->
@@ -12,41 +13,21 @@
     <!-- /build -->
 
     <!-- build:js:dist vendor.min.js -->
-    <script src="../node_modules/jquery/dist/jquery.js"></script>
-    <script src="../node_modules/bootstrap/dist/js/bootstrap.js"></script>
-    <script src="../node_modules/angular/angular.js"></script>
+    <script src="../bower_components/jquery/dist/jquery.js"></script>
+    <script src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="../bower_components/angular/angular.js"></script>
+    <script src="../bower_components/angular-ui-select/dist/select.js"></script>
     <!-- /build -->
 
     <!-- build:js:dist app.min.js -->
-    <script src="common/services.js"></script>
-    <script src="holiday/services.js"></script>
-    <script src="personal/services.js"></script>
-    <script src="sick/services.js"></script>
-    <script src="vacation/services.js"></script>
-    <script src="calculator/CalculatorController.js"></script>
-    <script src="calculator/directives.js"></script>
-    <script src="app.js"></script>
+    <script src="ataCashout.js"></script>
     <!-- /build -->
   </head>
   <body>
     <div class="container-fluid">
       <h1>ATA Cashout Calculator</h1>
       <p>Use this calculator to determine how best to use and save your accrued leave time.</p>
-      <div class="row" ng-controller="CalculatorController">
-        <div class="col-sm-6">
-          <job-panel member="member.current"></job-panel>
-          <accruals-panel member="member.current"></accruals-panel>
-          <button class="btn btn-success" ng-click="calc.go()">Go</button>
-          <button class="btn btn-danger" ng-click="calc.reset()">Reset</button>
-        </div>
-        <div class="col-sm-6">
-           <div class="well">
-            <strong>member</strong>
-            <pre>{{member.current | json}}</pre>
-          </div>
-          <results-panel result="member.result"/>
-        </div>
-      </div>
+      <cashout-calculator></cashout-calculator>
     </div>
   </body>
 </html>

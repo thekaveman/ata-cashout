@@ -1,10 +1,10 @@
 "use strict";
 
-beforeEach(module("ataCashout.vacation", function($provide) {
-  $provide.value("HoursInDay", 2);
-}));
-
 describe("VacationCashout", function() {
+  beforeEach(module("ataCashout.vacation", function($provide) {
+    $provide.value("HoursInDay", 2);
+  }));
+
   var vacationCashout, member;
 
   beforeEach(inject(function(VacationCashout) {

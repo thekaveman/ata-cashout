@@ -16,7 +16,7 @@ And finally setup the dev and runtime dependencies:
 
 Tests can be run using:
 
-    $ karma run karma.config.js
+    $ karma start karma.config.js
 
 Prepare for deployment with:
 

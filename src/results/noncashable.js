@@ -24,8 +24,11 @@
       return $scope.rule.detail && $scope.rule.detail.length > 0;
     };
 
-    $scope.icon = function() {
-      return "glyphicon-" + $scope.rule.type;
+    $scope.icons = function() {
+      return [
+        "glyphicon",
+        "glyphicon-" + $scope.rule.type
+      ];
     };
   }
 })();

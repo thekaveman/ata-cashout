@@ -19,6 +19,8 @@ module.exports = function(grunt) {
     "src/hours/*.js",
     "src/members/module.js",
     "src/members/*.js",
+    "src/results/module.js",
+    "src/results/*.js",
     "src/**/module.js",
     "!src/calculator/module.js",
     "src/calculator/module.js",

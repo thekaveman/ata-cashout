@@ -23,11 +23,13 @@
       result: { ready: false }
     };
 
-    $scope.nonCashableRules = {
-      holiday: holidayCashout.nonCashableRule,
-      sick: sickCashout.nonCashableRule
-    };
+    $scope.resultPanelConfigs = [];
 
+    $scope.$on("resultPanelConfig", function(event, config) {
+      config.member = $scope.member.current;
+      config.result = $scope.member.result[config.id];
+      $scope.resultPanelConfigs.push(config);
+    });
     function go() {
       var m = $scope.member.current;
       $scope.member.result = {

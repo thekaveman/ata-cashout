@@ -21,6 +21,7 @@
       new: function(config) {
         return {
           heading: config.heading || "",
+          id: config.id || "",
           member: config.member || {},
           nonCashableRule: config.nonCashableRule || {},
           result: config.result || {}

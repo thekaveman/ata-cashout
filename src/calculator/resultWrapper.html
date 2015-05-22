@@ -1,0 +1,17 @@
+<div class="panel panel-success result">
+  <div class="panel-heading">
+    <strong>{{ heading }}</strong>
+  </div>
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-md-5">
+        <h3>Cashable</h3>
+        <p class="lead">
+          <span class="glyphicon glyphicon-time"></span> {{ result.cashable }} hours
+          <span class="glyphicon glyphicon-arrow-right"></span> ${{ result.cashable * member.payRate | number:2 }}
+        </p>
+      </div>
+      <div class="col-md-7" ng-transclude></div>
+    </div>
+  </div>
+</div>

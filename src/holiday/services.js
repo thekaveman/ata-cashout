@@ -4,11 +4,13 @@
   angular
     .module("ataCashout.holiday")
       .value("CashableHolidayHours", 8)
-      .factory("HolidayCashout", ["Members", "CashableHolidayHours", HolidayCashoutFactory]);
+      .factory("HolidayCashout", ["Members", "CashableHolidayHours", "HolidayNonCashoutRule", HolidayCashoutFactory])
+      .factory("HolidayNonCashoutRule", HolidayNonCashoutRuleFactory);
 
-  function HolidayCashoutFactory(members, cashableHours) {
+  function HolidayCashoutFactory(members, cashableHours, rule) {
     return {
-      evaluate: evaluate
+      evaluate: evaluate,
+      nonCashableRule: rule
     };
 
     function evaluate(member) {
@@ -21,6 +23,23 @@
         cashable: cashable,
         diff: member.accrued.holiday - cashable
       };
+    }
+  }
+
+  function HolidayNonCashoutRuleFactory() {
+    return {
+      detail: "lost at end of fiscal year",
+      show: show,
+      type: "alert"
+    };
+
+    function show(result) {
+      try {
+        return result.diff > 0;
+      }
+      catch (ex) {
+        return false;
+      }
     }
   }
 })();

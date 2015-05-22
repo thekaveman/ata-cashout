@@ -23,6 +23,11 @@
       result: { ready: false }
     };
 
+    $scope.nonCashableRules = {
+      holiday: holidayCashout.nonCashableRule,
+      sick: sickCashout.nonCashableRule
+    };
+
     function go() {
       var m = $scope.member.current;
       $scope.member.result = {

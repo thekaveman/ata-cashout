@@ -5,7 +5,8 @@
     .module("ataCashout.sick")
       .factory("SickCashoutAmounts", SickCashoutAmounts)
       .factory("SickCashoutBank", SickCashoutBank)
-      .factory("SickCashout", ["DayHours", "Members", "SickCashoutAmounts", "SickCashoutBank", SickCashoutFactory]);
+      .factory("SickCashout", ["DayHours", "Members", "SickCashoutAmounts", "SickCashoutBank", "SickNonCashableRule", SickCashoutFactory])
+      .factory("SickNonCashableRule", SickNonCashableRuleFactory);
 
   function SickCashoutAmounts() {
     //the 'amounts' arrays below
@@ -28,9 +29,10 @@
     };
   }
 
-  function SickCashoutFactory(hours, members, amounts, bank) {
+  function SickCashoutFactory(hours, members, amounts, bank, rule) {
     return {
-      evaluate: evaluate
+      evaluate: evaluate,
+      nonCashableRule: rule
     };
 
     function evaluate(member) {
@@ -63,6 +65,24 @@
         return hours.toHours(cashableDays);
       }
       return 0;
+    }
+  }
+
+  function SickNonCashableRuleFactory() {
+    return {
+      detail: "banked at end of fiscal year",
+      show: show,
+      type: "piggy-bank"
+    };
+
+    function show(result) {
+      try {
+        return result.diff > 0;
+      }
+      catch (ex) {
+        console.error(ex);
+        return false;
+      }
     }
   }
 })();

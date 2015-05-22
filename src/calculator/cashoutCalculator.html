@@ -6,5 +6,7 @@
     <button class="btn btn-danger" ng-click="calc.reset()">Reset</button>
   </div>
   <div class="col-sm-6">
+    <result-wrapper heading="Holiday / Floating Holiday" member="member.current" result="member.result.holiday" ng-if="member.result.ready">
+    </result-wrapper>
   </div>
 </div>

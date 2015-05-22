@@ -1,5 +1,5 @@
-<h3>Non-Cashable <small ng-if="!equals(rule.detail, '')">{{ rule.detail }}</small></h3>
+<h3>Non-Cashable <small ng-if="showDetail()">{{ rule.detail }}</small></h3>
 <p class="lead">
-  <span ng-class="glyphicon glyphicon-{{ rule.type }}"></span> {{ result.diff }} hours
+  <span ng-class="glyphicon {{ icon }}"></span> {{ result.diff }} hours
   <span class="glyphicon glyphicon-arrow-right"></span> ${{ result.diff * member.payRate | number:2 }}
 </p>

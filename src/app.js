@@ -8,6 +8,7 @@
       "ataCashout.salaries",
       "ataCashout.holiday",
       "ataCashout.personal",
+      "ataCashout.results",
       "ataCashout.sick",
       "ataCashout.vacation",
       "ataCashout.calculator",

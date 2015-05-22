@@ -1,14 +1,14 @@
 <div class="panel panel-success result">
   <div class="panel-heading">
-    <strong>{{ heading }}</strong>
+    <strong>{{ config.heading }}</strong>
   </div>
   <div class="panel-body">
     <div class="row">
       <div class="col-md-5">
-        <cashable member="member" result="result" />
+        <cashable member="config.member" result="config.result" />
       </div>
       <div class="col-md-7">
-        <noncashable member="member" result="result" rule="nonCashableRule" />
+        <noncashable member="config.member" result="config.result" rule="config.nonCashableRule" />
       </div>
     </div>
   </div>

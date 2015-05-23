@@ -4,17 +4,9 @@
   angular
     .module("ataCashout.holiday")
       .value("CashableHolidayHours", 8)
-      .factory("HolidayCashout", [
-        "$rootScope",
-        "Members",
-        "CashableHolidayHours",
-        "HolidayNonCashoutRule",
-        "resultPanelConfig",
-        HolidayCashoutFactory
-      ])
-      .factory("HolidayNonCashoutRule", HolidayNonCashoutRuleFactory);
+      .factory("HolidayCashout", ["Members", "CashableHolidayHours", HolidayCashoutFactory]);
 
-  function HolidayCashoutFactory($rootScope, members, cashableHours, rule, resultPanelConfig) {
+  function HolidayCashoutFactory(members, cashableHours) {
     return {
       evaluate: evaluate
     };
@@ -25,34 +17,21 @@
                    ? member.accrued.holiday
                    : cashableHours;
 
-      $rootScope.$broadcast("resultPanelConfig", resultPanelConfig.new({
-        id: "holiday",
-        heading: "Holiday / Floating Holiday",
-        nonCashableRule: rule,
-      }));
+      var diff = member.accrued.holiday - cashable;
 
       return {
         accrued: member.accrued.holiday,
         cashable: cashable,
-        diff: member.accrued.holiday - cashable
+        diff: diff,
+        config: {
+          heading: "Holiday / Floating Holiday",
+          id: "holiday",
+          nonCashable: {
+            show: diff > 0,
+            type: "loss"
+          }
+        }
       };
-    }
-  }
-
-  function HolidayNonCashoutRuleFactory() {
-    return {
-      detail: "lost at end of fiscal year",
-      show: show,
-      type: "alert"
-    };
-
-    function show(result) {
-      try {
-        return result.diff > 0;
-      }
-      catch (ex) {
-        return false;
-      }
     }
   }
 })();

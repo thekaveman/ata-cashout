@@ -6,16 +6,12 @@
       .factory("SickCashoutAmounts", SickCashoutAmounts)
       .factory("SickCashoutBank", SickCashoutBank)
       .factory("SickCashout", [
-        "$rootScope",
         "DayHours",
         "Members",
         "SickCashoutAmounts",
         "SickCashoutBank",
-        "SickNonCashableRule",
-        "resultPanelConfig",
         SickCashoutFactory
-      ])
-      .factory("SickNonCashableRule", SickNonCashableRuleFactory);
+      ]);
 
   function SickCashoutAmounts() {
     //the 'amounts' arrays below
@@ -38,7 +34,7 @@
     };
   }
 
-  function SickCashoutFactory($rootScope, hours, members, amounts, bank, rule, resultPanelConfig) {
+  function SickCashoutFactory(hours, members, amounts, bank) {
     return {
       evaluate: evaluate,
     };
@@ -49,16 +45,20 @@
                    ? 0
                    : getCashableHours(member.serviceYears, member.used.sick);
 
-      $rootScope.$broadcast("resultPanelConfig", resultPanelConfig.new({
-        id: "sick",
-        heading: "Sick",
-        nonCashableRule: rule,
-      }));
+      var diff = member.accrued.sick - cashable;
 
       return {
         accrued: member.accrued.sick,
         cashable: cashable,
-        diff: member.accrued.sick - cashable
+        diff: diff,
+        config: {
+          heading: "Sick",
+          id: "sick",
+          nonCashable: {
+            show: diff > 0,
+            type: "bank"
+          }
+        }
       };
     }
 
@@ -80,24 +80,6 @@
         return hours.toHours(cashableDays);
       }
       return 0;
-    }
-  }
-
-  function SickNonCashableRuleFactory() {
-    return {
-      detail: "banked at end of fiscal year",
-      show: show,
-      type: "piggy-bank"
-    };
-
-    function show(result) {
-      try {
-        return result.diff > 0;
-      }
-      catch (ex) {
-        console.error(ex);
-        return false;
-      }
     }
   }
 })();

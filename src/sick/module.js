@@ -2,6 +2,6 @@
   "use strict";
 
   angular
-    .module("ataCashout.sick", ["ataCashout.hours", "ataCashout.members", "ataCashout.results"]);
+    .module("ataCashout.sick", ["ataCashout.hours", "ataCashout.members"]);
 
 })();

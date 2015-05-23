@@ -5,10 +5,10 @@
     .module("ataCashout", [
       "ataCashout.hours",
       "ataCashout.members",
-      "ataCashout.results",
       "ataCashout.salaries",
       "ataCashout.holiday",
       "ataCashout.personal",
+      "ataCashout.results",
       "ataCashout.sick",
       "ataCashout.vacation",
       "ataCashout.calculator",

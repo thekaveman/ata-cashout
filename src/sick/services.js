@@ -5,7 +5,16 @@
     .module("ataCashout.sick")
       .factory("SickCashoutAmounts", SickCashoutAmounts)
       .factory("SickCashoutBank", SickCashoutBank)
-      .factory("SickCashout", ["DayHours", "Members", "SickCashoutAmounts", "SickCashoutBank", "SickNonCashableRule", SickCashoutFactory])
+      .factory("SickCashout", [
+        "$rootScope",
+        "DayHours",
+        "Members",
+        "SickCashoutAmounts",
+        "SickCashoutBank",
+        "SickNonCashableRule",
+        "resultPanelConfig",
+        SickCashoutFactory
+      ])
       .factory("SickNonCashableRule", SickNonCashableRuleFactory);
 
   function SickCashoutAmounts() {
@@ -29,10 +38,9 @@
     };
   }
 
-  function SickCashoutFactory(hours, members, amounts, bank, rule) {
+  function SickCashoutFactory($rootScope, hours, members, amounts, bank, rule, resultPanelConfig) {
     return {
       evaluate: evaluate,
-      nonCashableRule: rule
     };
 
     function evaluate(member) {
@@ -40,6 +48,13 @@
       var cashable = member.accrued.sick < bank.minBalance
                    ? 0
                    : getCashableHours(member.serviceYears, member.used.sick);
+
+      $rootScope.$broadcast("resultPanelConfig", resultPanelConfig.new({
+        id: "sick",
+        heading: "Sick",
+        nonCashableRule: rule,
+      }));
+
       return {
         accrued: member.accrued.sick,
         cashable: cashable,

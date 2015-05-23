@@ -1,9 +1,9 @@
 <h3>Cashable</h3>
 <p class="lead" ng-if="result.cashable > 0">
-    <span class="glyphicon glyphicon-time"></span> {{ result.cashable }} hours
+    <span class="glyphicon glyphicon-time"></span> <span ng-bind="cashableHours()"></span> hours
     <span class="glyphicon glyphicon-arrow-right"></span>
-    ${{ result.cashable * result.member.payRate | number:2 }}
+    $<span ng-bind="cashableValue()"></span>
 </p>
-<p ng-if="cashable <= 0">
+<p ng-if="result.cashable <= 0" class="text-muted">
   No cashable hours.
 </p>

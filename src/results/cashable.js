@@ -3,7 +3,8 @@
 
   angular
     .module("ataCashout.results")
-      .directive("cashable", cashable);
+      .directive("cashable", cashable)
+      .controller("cashableController", ["$scope", "numberFilter", cashableController]);
 
   function cashable() {
     return {
@@ -11,7 +12,23 @@
       scope: {
         result: "="
       },
+      controller: "cashableController",
       templateUrl: "results/cashable.html"
     };
+  }
+  
+  function cashableController($scope, numberFilter) {
+    var result = $scope.result;
+
+    $scope.cashableHours = function() {
+      if(result.accrued < result.cashable)
+        return result.accrued;
+      else
+        return result.cashable;
+    }
+
+    $scope.cashableValue = function() {
+      return numberFilter($scope.cashableHours() * result.member.payRate, 2);
+    }
   }
 })();

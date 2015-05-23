@@ -9,7 +9,6 @@
     return {
       restrict: "E",
       scope: {
-        member: "=",
         result: "="
       },
       templateUrl: "results/cashable.html"

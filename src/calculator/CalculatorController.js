@@ -15,49 +15,45 @@
   function CalculatorController($scope, holidayCashout, personalCashout, sickCashout, vacationCashout) {
     $scope.calc = {
       go: go,
+      ready: ready,
       reset: reset
     };
 
     $scope.member = {
       current: { accrued: {} },
-      result: { ready: false }
     };
 
-    $scope.resultPanelConfigs = [];
+    $scope.results = [];
 
-    $scope.$on("resultPanelConfig", function(event, config) {
-      $scope.resultPanelConfigs.push(config);
-    });
     function go() {
+      $scope.results = [];
+
       var m = $scope.member.current;
 
-      resetResultConfigs();
+      var results = [
+        holidayCashout.evaluate(m),
+        personalCashout.evaluate(m),
+        sickCashout.evaluate(m),
+        vacationCashout.evaluate(m),
+      ];
 
-      $scope.member.result = {
-        holiday: holidayCashout.evaluate(m),
-        personal: personalCashout.evaluate(m),
-        sick: sickCashout.evaluate(m),
-        vacation: vacationCashout.evaluate(m),
-        ready: true
-      };
-
-      angular.forEach($scope.resultPanelConfigs, function(config) {
-        config.member = $scope.member.current;
-        config.result = $scope.member.result[config.id];
+      angular.forEach(results, function(result) {
+        result.member = $scope.member.current;
+        $scope.results.push(result);
       });
     }
 
     function reset() {
       $scope.member = {
         current: { accrued: {} },
-        result: { ready: false }
+        result: {}
       };
-      resetResultConfigs();
+      $scope.results = [];
       $scope.$broadcast("reset");
     }
 
-    function resetResultConfigs() {
-      $scope.resultPanelConfigs = [];
+    function ready() {
+      return $scope.results.length > 0;
     }
   }
 })();

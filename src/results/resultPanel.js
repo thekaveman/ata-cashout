@@ -3,30 +3,22 @@
 
   angular
     .module("ataCashout.results")
-      .directive("resultPanel", resultPanel)
-      .factory("resultPanelConfig", resultPanelConfig);
+      .directive("resultPanel", resultPanel);
 
   function resultPanel() {
     return {
       restrict: "E",
       scope: {
-        config: "=",
+        result: "=",
+      },
+      link: function(scope, element, attrs) {
+        console.log(scope.result);
+        var cashableCols = scope.result.diff > 0 ? 5 : 8;
+        var nonCashableCols = 12 - cashableCols;
+        scope.cashableCols = "col-md-" + cashableCols;
+        scope.nonCashableCols = nonCashableCols > 0 ? "col-md-" + nonCashableCols : null;
       },
       templateUrl: "results/resultPanel.html"
-    };
-  }
-
-  function resultPanelConfig() {
-    return {
-      new: function(config) {
-        return {
-          heading: config.heading || "",
-          id: config.id || "",
-          member: config.member || {},
-          nonCashableRule: config.nonCashableRule || {},
-          result: config.result || {}
-        };
-      }
     };
   }
 })();

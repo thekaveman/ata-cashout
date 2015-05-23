@@ -5,7 +5,7 @@
     <button class="btn btn-success" ng-click="calc.go()">Go</button>
     <button class="btn btn-danger" ng-click="calc.reset()">Reset</button>
   </div>
-  <div class="col-sm-6" ng-if="member.result.ready">
-    <result-panel ng-repeat="config in resultPanelConfigs" config="config" />
+  <div class="col-sm-6" ng-if="calc.ready()">
+    <result-panel ng-repeat="result in results" result="result" />
   </div>
 </div>

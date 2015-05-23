@@ -1,5 +1,7 @@
-<h3>Non-Cashable <small ng-if="showDetail()">{{ rule.detail }}</small></h3>
-<p class="lead">
-  <span ng-class="icons()"></span> {{ result.diff }} hours
-  <span class="glyphicon glyphicon-arrow-right"></span> ${{ result.diff * member.payRate | number:2 }}
-</p>
+<div ng-if="result.diff > 0">
+  <h3>Non-Cashable <small ng-if="showDescription()" ng-bind="description()"></small></h3>
+  <p class="lead">
+    <span ng-class="icon()"></span> {{ result.diff }} hours
+    <span class="glyphicon glyphicon-arrow-right"></span> ${{ result.diff * result.member.payRate | number:2 }}
+  </p>
+</div>

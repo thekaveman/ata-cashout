@@ -4,31 +4,49 @@
   angular
     .module("ataCashout.results")
       .directive("noncashable", noncashable)
-      .controller("noncashableController", ["$scope", noncashableController]);
+      .controller("noncashableController", ["$scope", "noncashableMaps", noncashableController])
+      .factory("noncashableMaps", noncashableMaps);
 
   function noncashable() {
     return {
       restrict: "E",
       scope: {
-        member: "=",
-        result: "=",
-        rule: "="
+        result: "="
       },
       controller: "noncashableController",
       templateUrl: "results/noncashable.html"
     };
   }
 
-  function noncashableController($scope) {
-    $scope.showDetail = function() {
-      return $scope.rule.detail && $scope.rule.detail.length > 0;
+  function noncashableController($scope, maps) {
+    $scope.icon = function() {
+      return maps.icons.hasOwnProperty($scope.result.config.nonCashable.type)
+             ? ["glyphicon", "glyphicon-" + maps.icons[$scope.result.config.nonCashable.type]]
+             : null;
     };
 
-    $scope.icons = function() {
-      return [
-        "glyphicon",
-        "glyphicon-" + $scope.rule.type
-      ];
+    $scope.description = function() {
+      return maps.descriptions.hasOwnProperty($scope.result.config.nonCashable.type)
+             ? maps.descriptions[$scope.result.config.nonCashable.type]
+             : null;
+    };
+
+    $scope.showDescription = function() {
+      return !!$scope.description;
+    }
+  }
+
+  function noncashableMaps() {
+    return {
+      icons: {
+        bank: "piggy-bank",
+        loss: "exclamation-sign"
+      },
+      descriptions: {
+        bank: "banked at end of fiscal year",
+        loss: "lost at end of fiscal year"
+      },
+      
     };
   }
 })();

@@ -1,7 +1,14 @@
-<div ng-if="result.noncashable > 0">
-  <h3>Non-Cashable <small ng-if="showDescription()" ng-bind="description()"></small></h3>
+<div ng-if="show.any()">
+  <h3>Non-Cashable <small ng-if="show.description()" ng-bind="description()"></small></h3>
   <p class="lead">
-    <span ng-class="icon()"></span> {{ result.noncashable }} hours
-    <span class="glyphicon glyphicon-arrow-right"></span> ${{ result.noncashable * result.member.payRate | number:2 }}
+    <span ng-class="icon()"></span> <span ng-bind="hours.noncashable()"></span> hours
+    <span class="glyphicon glyphicon-arrow-right"></span> $<span ng-bind="amounts.noncashable()"></span>
   </p>
+  <div ng-if="show.loss()">
+    <h3>Lost <small><span ng-bind="hours.maxCarryover()"></span> hours max carryover</small></h3>
+    <p class="lead">
+      <span ng-class="icon('loss')"></span> <span ng-bind="hours.loss()"></span> hours
+      <span class="glyphicon glyphicon-arrow-right"></span> $<span ng-bind="amounts.loss()"></span>
+    </p>
+  </div>
 </div>

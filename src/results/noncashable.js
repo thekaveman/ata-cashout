@@ -4,7 +4,7 @@
   angular
     .module("ataCashout.results")
       .directive("noncashable", noncashable)
-      .controller("noncashableController", ["$scope", "noncashableMaps", noncashableController])
+      .controller("noncashableController", ["$scope", "numberFilter", "noncashableMaps", noncashableController])
       .factory("noncashableMaps", noncashableMaps);
 
   function noncashable() {
@@ -18,22 +18,56 @@
     };
   }
 
-  function noncashableController($scope, maps) {
-    $scope.icon = function() {
-      return maps.icons.hasOwnProperty($scope.result.config.noncashable.type)
-             ? ["glyphicon", "glyphicon-" + maps.icons[$scope.result.config.noncashable.type]]
+  function noncashableController($scope, numberFilter, maps) {
+    var result = $scope.result,
+        member = result.member;
+
+    $scope.icon = function(type) {
+      type = type || result.config.noncashable.type;
+      return maps.icons.hasOwnProperty(type)
+             ? ["glyphicon", "glyphicon-" + maps.icons[type]]
              : null;
     };
 
-    $scope.description = function() {
-      return maps.descriptions.hasOwnProperty($scope.result.config.noncashable.type)
-             ? maps.descriptions[$scope.result.config.noncashable.type]
+    $scope.description = function(type) {
+      type = type || result.config.noncashable.type;
+      return maps.descriptions.hasOwnProperty(type)
+             ? maps.descriptions[type]
              : null;
     };
 
-    $scope.showDescription = function() {
-      return !!$scope.description;
-    }
+    $scope.hours = {
+      maxCarryover: function() {
+        return $scope.hours.noncashable();
+      },
+      noncashable: function() {
+        return result.noncashable;
+      },
+      loss: function() {
+        return result.loss || 0;
+      }
+    };
+
+    $scope.amounts = {
+      noncashable: function() {
+        return numberFilter($scope.hours.noncashable() * member.payRate, 2);
+      },
+      loss: function() {
+        return numberFilter($scope.hours.loss() * member.payRate, 2);
+      }
+    };
+
+    $scope.show = {
+      any: function() {
+        return $scope.hours.noncashable() > 0;
+      },
+      description: function() {
+        return !!$scope.description();
+      },
+      loss: function() {
+        return $scope.hours.loss() > 0;
+      }
+    };
   }
 
   function noncashableMaps() {

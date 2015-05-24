@@ -21,12 +21,11 @@
 
     $scope.member = {
       current: { accrued: {} },
+      results: []
     };
 
-    $scope.results = [];
-
     function go() {
-      $scope.results = [];
+      $scope.member.results = [];
 
       var m = $scope.member.current;
 
@@ -39,21 +38,20 @@
 
       angular.forEach(results, function(result) {
         result.member = $scope.member.current;
-        $scope.results.push(result);
+        $scope.member.results.push(result);
       });
     }
 
     function reset() {
       $scope.member = {
         current: { accrued: {} },
-        result: {}
+        results: []
       };
-      $scope.results = [];
       $scope.$broadcast("reset");
     }
 
     function ready() {
-      return $scope.results.length > 0;
+      return $scope.member.results.length > 0;
     }
   }
 })();

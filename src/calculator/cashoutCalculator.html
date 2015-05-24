@@ -6,6 +6,6 @@
     <button class="btn btn-danger" ng-click="calc.reset()">Reset</button>
   </div>
   <div class="col-sm-6" ng-if="calc.ready()">
-    <result-panel ng-repeat="result in results" result="result" />
+    <result-panel ng-repeat="result in member.results" result="result" />
   </div>
 </div>

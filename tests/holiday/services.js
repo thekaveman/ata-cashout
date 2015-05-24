@@ -9,6 +9,7 @@ describe("HolidayCashout", function() {
 
   beforeEach(inject(function(HolidayCashout) {
     holidayCashout = HolidayCashout;
+    member = {};
   }));
 
   it("should initialize members on evaluation", inject(function(Members) {
@@ -26,7 +27,7 @@ describe("HolidayCashout", function() {
     expect(result.accrued).toBe(7);
   });
 
-  it("should evaluate accred as cashable when < cashableHours", inject(function(CashableHolidayHours) {
+  it("should evaluate accrued as cashable when < cashableHours", inject(function(CashableHolidayHours) {
     var member = {
       accrued: { holiday: CashableHolidayHours * 5 }
     };
@@ -42,6 +43,6 @@ describe("HolidayCashout", function() {
 
     var result = holidayCashout.evaluate(member);
     expect(result.cashable).toBe(CashableHolidayHours);
-    expect(result.diff).toBe(2);
+    expect(result.noncashable).toBe(2);
   }));
 });

@@ -80,7 +80,7 @@ describe("SickCashout", function() {
       inject(function(SickCashout) {
         var result = SickCashout.evaluate(member);
         expect(result.cashable).toBe(6);
-        expect(result.diff).toBe(9);
+        expect(result.noncashable).toBe(9);
       });
     });
   });

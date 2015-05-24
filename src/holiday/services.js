@@ -13,10 +13,7 @@
 
     function evaluate(member) {
       member = members.initialize(member);
-      var cashable = member.accrued.holiday < cashableHours
-                   ? member.accrued.holiday
-                   : cashableHours;
-
+      var cashable = Math.min(member.accrued.holiday, cashableHours);
       var diff = member.accrued.holiday - cashable;
 
       return {

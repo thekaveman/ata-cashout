@@ -42,16 +42,16 @@
       });
     }
 
+    function ready() {
+      return $scope.member.results.length > 0;
+    }
+
     function reset() {
       $scope.member = {
         current: { accrued: {} },
         results: []
       };
       $scope.$broadcast("reset");
-    }
-
-    function ready() {
-      return $scope.member.results.length > 0;
     }
   }
 })();

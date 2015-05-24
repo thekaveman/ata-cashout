@@ -28,6 +28,15 @@ describe("CalculatorController", function() {
         scope.calc.go();
         expect(scope.calc.ready()).toBe(true);
       });
+
+      it("should attach the current member to each result", function() {
+        scope.member.current = { name: "current member" };
+        scope.calc.go();
+        var results = scope.member.results;
+        for(var i = 0; i < results.length; i++) {
+          expect(results[i].member.name).toEqual("current member");
+        }
+      });
     });
 
     describe("ready", function() {
@@ -49,7 +58,7 @@ describe("CalculatorController", function() {
         expect(scope.member.current).toEqual({ accrued: {} });
       });
 
-      it("should reset to a member results that is empty", function() {
+      it("should reset to a member with empty results", function() {
         scope.member.results = ["something", { else: "something" }]
         scope.calc.reset();
         expect(scope.member.results).toEqual([]);

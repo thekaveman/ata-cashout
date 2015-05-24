@@ -12,11 +12,10 @@
         result: "=",
       },
       link: function(scope, element, attrs) {
-        console.log(scope.result);
-        var cashableCols = scope.result.diff > 0 ? 5 : 8;
-        var nonCashableCols = 12 - cashableCols;
+        var cashableCols = scope.result.noncashable > 0 ? 5 : 8;
+        var noncashableCols = 12 - cashableCols;
         scope.cashableCols = "col-md-" + cashableCols;
-        scope.nonCashableCols = nonCashableCols > 0 ? "col-md-" + nonCashableCols : null;
+        scope.noncashableCols = noncashableCols > 0 ? "col-md-" + noncashableCols : null;
       },
       templateUrl: "results/resultPanel.html"
     };

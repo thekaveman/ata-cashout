@@ -32,6 +32,8 @@
     function evaluate(member) {
       member = members.initialize(member);
       var result = getAmounts(member.serviceYears);
+      var diff = computeDiff(member.accrued.personal, member.accrued.personalBank, result.cashable);
+
       return {
         accrued: {
           personal: member.accrued.personal,
@@ -39,7 +41,7 @@
         },
         carryover: result.carryover || 0,
         cashable: result.cashable || 0,
-        diff: computeDiff(member.accrued.personal, member.accrued.personalBank, result.cashable)
+        noncashable: diff,
       };
     }
 

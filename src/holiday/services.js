@@ -22,11 +22,11 @@
       return {
         accrued: member.accrued.holiday,
         cashable: cashable,
-        diff: diff,
+        noncashable: diff,
         config: {
           heading: "Holiday / Floating Holiday",
           id: "holiday",
-          nonCashable: {
+          noncashable: {
             show: diff > 0,
             type: "loss"
           }

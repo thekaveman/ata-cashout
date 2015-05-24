@@ -37,11 +37,11 @@
       return {
         accrued: member.accrued.vacation,
         cashable: cashable,
-        diff: diff,
+        noncashable: diff,
         config: {
           heading: "Vacation",
           id: "vacation",
-          nonCashable: {
+          noncashable: {
             show: diff > 0,
             type: "bank"
           }

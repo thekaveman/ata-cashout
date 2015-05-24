@@ -20,14 +20,14 @@
 
   function noncashableController($scope, maps) {
     $scope.icon = function() {
-      return maps.icons.hasOwnProperty($scope.result.config.nonCashable.type)
-             ? ["glyphicon", "glyphicon-" + maps.icons[$scope.result.config.nonCashable.type]]
+      return maps.icons.hasOwnProperty($scope.result.config.noncashable.type)
+             ? ["glyphicon", "glyphicon-" + maps.icons[$scope.result.config.noncashable.type]]
              : null;
     };
 
     $scope.description = function() {
-      return maps.descriptions.hasOwnProperty($scope.result.config.nonCashable.type)
-             ? maps.descriptions[$scope.result.config.nonCashable.type]
+      return maps.descriptions.hasOwnProperty($scope.result.config.noncashable.type)
+             ? maps.descriptions[$scope.result.config.noncashable.type]
              : null;
     };
 
@@ -46,7 +46,6 @@
         bank: "banked at end of fiscal year",
         loss: "lost at end of fiscal year"
       },
-      
     };
   }
 })();

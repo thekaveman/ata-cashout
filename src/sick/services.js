@@ -50,11 +50,11 @@
       return {
         accrued: member.accrued.sick,
         cashable: cashable,
-        diff: diff,
+        noncashable: diff,
         config: {
           heading: "Sick",
           id: "sick",
-          nonCashable: {
+          noncashable: {
             show: diff > 0,
             type: "bank"
           }

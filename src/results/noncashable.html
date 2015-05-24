@@ -1,7 +1,7 @@
-<div ng-if="result.diff > 0">
+<div ng-if="result.noncashable > 0">
   <h3>Non-Cashable <small ng-if="showDescription()" ng-bind="description()"></small></h3>
   <p class="lead">
-    <span ng-class="icon()"></span> {{ result.diff }} hours
-    <span class="glyphicon glyphicon-arrow-right"></span> ${{ result.diff * result.member.payRate | number:2 }}
+    <span ng-class="icon()"></span> {{ result.noncashable }} hours
+    <span class="glyphicon glyphicon-arrow-right"></span> ${{ result.noncashable * result.member.payRate | number:2 }}
   </p>
 </div>

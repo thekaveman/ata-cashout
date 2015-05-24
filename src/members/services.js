@@ -18,7 +18,6 @@
         accrued: {
           holiday: 0,
           personal: 0,
-          personalBank: 0,
           sick: 0,
           vacation: 0
         },

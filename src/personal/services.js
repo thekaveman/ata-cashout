@@ -32,35 +32,39 @@
     function evaluate(member) {
       member = members.initialize(member);
       var result = getAmounts(member.serviceYears);
-      var diff = computeDiff(member.accrued.personal, member.accrued.personalBank, result.cashable);
+
+      var cashable = Math.min(result.cashable, member.accrued.personal),
+          noncashable = Math.min(result.carryover, member.accrued.personal - cashable),
+          loss = member.accrued.personal - cashable - noncashable;
 
       return {
-        accrued: {
-          personal: member.accrued.personal,
-          personalBank: member.accrued.personalBank
-        },
-        carryover: result.carryover || 0,
-        cashable: result.cashable || 0,
-        noncashable: diff,
+        accrued: member.accrued.personal,
+        cashable: cashable,
+        loss: loss,
+        noncashable: noncashable,
+        config: {
+          heading: "Personal Leave",
+          id: "personal",
+          noncashable: {
+            show: true,
+            type: "bank"
+          }
+        }
       };
     }
 
     function getAmounts(serviceYears) {
+      var amt = {
+        cashable: 0,
+        carryover: 0
+      };
       for(var i = 0; i < amounts.length; i++) {
         if(amounts[i].minYears <= serviceYears && serviceYears <= amounts[i].maxYears) {
-          return amounts[i].amounts;
+          amt = amounts[i].amounts;
+          break;
         }
       }
-      return {};
-    }
-
-    function computeDiff(personal, personalBank, cashable) {
-      var moreCashable = personal < cashable;
-      return {
-          personal: moreCashable ? 0 : personal - cashable,
-          personalBank: moreCashable ? (personal + personalBank) - cashable
-                                     : personalBank
-        };
+      return amt;
     }
   }
 })();

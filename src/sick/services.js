@@ -49,7 +49,7 @@
 
       return {
         accrued: member.accrued.sick,
-        cashable: cashable,
+        cashable: Math.min(cashable, member.accrued.sick),
         noncashable: diff,
         config: {
           heading: "Sick",

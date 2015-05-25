@@ -49,6 +49,14 @@ module.exports = function(grunt) {
     },
     //copy static
     copy: {
+      cname: {
+        src: "CNAME",
+        dest: "dist/CNAME"
+      },
+      css: {
+        src: "src/styles/app.css",
+        dest: "dist/styles/app.css"
+      },
       fonts: {
         expand: true,
         cwd: "bower_components/bootstrap/dist/fonts/",
@@ -61,10 +69,6 @@ module.exports = function(grunt) {
         src: "**/*.html",
         dest: "dist/"
       },
-      css: {
-        src: "src/styles/app.css",
-        dest: "dist/styles/app.css"
-      }
     },
     //deploy to gh-pages branch on github
     'gh-pages': {

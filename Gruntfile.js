@@ -42,16 +42,24 @@ module.exports = function(grunt) {
       },
       vendor: {
         files: [
-          { src: vendor.scripts, dest: "dist/vendor.min.js" },
-          { src: vendor.styles, dest: "dist/vendor.min.css" }
+          { src: vendor.scripts, dest: "dist/scripts/vendor.min.js" },
+          { src: vendor.styles, dest: "dist/styles/vendor.min.css" }
         ]
       }
     },
     //copy static
     copy: {
+      cname: {
+        src: "CNAME",
+        dest: "dist/CNAME"
+      },
+      css: {
+        src: "src/styles/app.css",
+        dest: "dist/styles/app.css"
+      },
       fonts: {
         expand: true,
-        cwd: "node_modules/bootstrap/dist/fonts/",
+        cwd: "bower_components/bootstrap/dist/fonts/",
         src: "*.*",
         dest: "dist/fonts/"
       },
@@ -60,7 +68,15 @@ module.exports = function(grunt) {
         cwd: "src/",
         src: "**/*.html",
         dest: "dist/"
-      }
+      },
+    },
+    //deploy to gh-pages branch on github
+    'gh-pages': {
+      options: {
+        base: "dist",
+        message: "Committed by grunt-gh-pages"
+      },
+      src: ['**']
     },
     //post-process HTML
     processhtml: {
@@ -72,10 +88,8 @@ module.exports = function(grunt) {
     //minify
     uglify: {
       dist: {
-        files: [
-          { src: devTarget, dest: "dist/app.min.js" },
-          { src: "src/app.css", dest: "dist/app.min.css" }
-        ]
+        src: devTarget,
+        dest: "dist/scripts/app.min.js"
       }
     },
     //watch for changes, and run other tasks on detection
@@ -96,10 +110,12 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks("grunt-contrib-copy");
   grunt.loadNpmTasks("grunt-contrib-uglify");
   grunt.loadNpmTasks("grunt-contrib-watch");
+  grunt.loadNpmTasks('grunt-gh-pages');
   grunt.loadNpmTasks("grunt-processhtml");
 
   grunt.registerTask("dev", ["clean:dev", "concat:dev"]);
   grunt.registerTask("dist", ["clean", "concat", "uglify", "copy", "processhtml"]);
+  grunt.registerTask("deploy", ["dist", "gh-pages"]);
 
   grunt.registerTask("default", "dev");
 };

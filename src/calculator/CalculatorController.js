@@ -15,31 +15,42 @@
   function CalculatorController($scope, holidayCashout, personalCashout, sickCashout, vacationCashout) {
     $scope.calc = {
       go: go,
+      ready: ready,
       reset: reset
     };
 
     $scope.member = {
       current: { accrued: {} },
-      result: { ready: false }
+      results: []
     };
 
     function go() {
+      $scope.member.results = [];
+
       var m = $scope.member.current;
-      $scope.member.result = {
-        holiday: holidayCashout.evaluate(m),
-        personal: personalCashout.evaluate(m),
-        sick: sickCashout.evaluate(m),
-        vacation: vacationCashout.evaluate(m),
-        ready: true
-      };
+
+      var results = [
+        holidayCashout.evaluate(m),
+        personalCashout.evaluate(m),
+        sickCashout.evaluate(m),
+        vacationCashout.evaluate(m),
+      ];
+
+      angular.forEach(results, function(result) {
+        result.member = $scope.member.current;
+        $scope.member.results.push(result);
+      });
+    }
+
+    function ready() {
+      return $scope.member.results.length > 0;
     }
 
     function reset() {
       $scope.member = {
         current: { accrued: {} },
-        result: { ready: false }
+        results: []
       };
-
       $scope.$broadcast("reset");
     }
   }

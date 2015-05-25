@@ -1,0 +1,15 @@
+<div class="panel panel-success result {{ result.config.id }}">
+  <div class="panel-heading">
+    <strong>{{ result.config.heading }}</strong>
+  </div>
+  <div class="panel-body">
+    <div class="row">
+      <div class="{{cashableCols}}">
+        <cashable result="result" />
+      </div>
+      <div class="{{noncashableCols}}">
+        <noncashable result="result" />
+      </div>
+    </div>
+  </div>
+</div>

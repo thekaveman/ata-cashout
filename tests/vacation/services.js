@@ -28,7 +28,7 @@ describe("VacationCashout", function() {
     member.accrued = { vacation: 5 };
     var result = vacationCashout.evaluate(member);
     expect(result.cashable).toBe(4);
-    expect(result.diff).toBe(1);
+    expect(result.noncashable).toBe(1);
   });
 
   describe("member with less than 10 years", function() {
@@ -40,7 +40,7 @@ describe("VacationCashout", function() {
     it("should be able to cash up to 40 hours", function() {
       var result = vacationCashout.evaluate(member);
       expect(result.cashable).toBe(40)
-      expect(result.diff).toBe(2);
+      expect(result.noncashable).toBe(2);
     });
   });
 
@@ -53,7 +53,7 @@ describe("VacationCashout", function() {
     it("should be able to cash up to 40 hours", function() {
       var result = vacationCashout.evaluate(member);
       expect(result.cashable).toBe(60)
-      expect(result.diff).toBe(2);
+      expect(result.noncashable).toBe(2);
     });
   });
 
@@ -66,7 +66,7 @@ describe("VacationCashout", function() {
     it("should be able to cash up to 80 hours", function() {
       var result = vacationCashout.evaluate(member);
       expect(result.cashable).toBe(80)
-      expect(result.diff).toBe(2);
+      expect(result.noncashable).toBe(2);
     });
   });
 });

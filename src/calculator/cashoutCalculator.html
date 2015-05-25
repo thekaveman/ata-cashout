@@ -5,11 +5,7 @@
     <button class="btn btn-success" ng-click="calc.go()">Go</button>
     <button class="btn btn-danger" ng-click="calc.reset()">Reset</button>
   </div>
-  <div class="col-sm-6">
-    <div class="well">
-      <strong>member</strong>
-      <pre>{{member.current | json}}</pre>
-    </div>
-    <results-panel result="member.result"/>
+  <div class="col-sm-6" ng-if="calc.ready()">
+    <result-panel ng-repeat="result in member.results" result="result" />
   </div>
 </div>

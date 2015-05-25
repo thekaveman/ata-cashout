@@ -16,17 +16,38 @@ describe("CalculatorController", function() {
       expect(scope.member.current).toEqual({ accrued: {} });
     });
 
-    it("should initialize with a result that is not ready", function() {
-      expect(scope.member.result).toEqual({ ready: false });
+    it("should initialize with empty results", function() {
+      expect(scope.member.results).toEqual([]);
     });
   });
 
   describe("calc", function() {
     describe("go", function() {
-      it("should make the member result ready", function() {
-        expect(scope.member.result.ready).toBe(false);
+      it("should make the calc ready", function() {
+        expect(scope.calc.ready()).toBe(false);
         scope.calc.go();
-        expect(scope.member.result.ready).toBe(true);
+        expect(scope.calc.ready()).toBe(true);
+      });
+
+      it("should attach the current member to each result", function() {
+        scope.member.current = { name: "current member" };
+        scope.calc.go();
+        var results = scope.member.results;
+        for(var i = 0; i < results.length; i++) {
+          expect(results[i].member.name).toEqual("current member");
+        }
+      });
+    });
+
+    describe("ready", function() {
+      it("should be false when member has no results", function() {
+        scope.member.results = [];
+        expect(scope.calc.ready()).toBe(false);
+      });
+      
+      it("should be true when member has results", function() {
+        scope.member.results = ["something", { else: "something" }];
+        expect(scope.calc.ready()).toBe(true);
       });
     });
 
@@ -37,10 +58,10 @@ describe("CalculatorController", function() {
         expect(scope.member.current).toEqual({ accrued: {} });
       });
 
-      it("should reset to a member result that is not ready", function() {
-        scope.member.result = { ready: true, something: ["one", "two"] }
+      it("should reset to a member with empty results", function() {
+        scope.member.results = ["something", { else: "something" }]
         scope.calc.reset();
-        expect(scope.member.result).toEqual({ ready: false });
+        expect(scope.member.results).toEqual([]);
       });
 
       it("should broadcast the reset message", function() {
@@ -53,5 +74,4 @@ describe("CalculatorController", function() {
       });
     });
   });
-
 });

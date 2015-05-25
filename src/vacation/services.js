@@ -32,11 +32,20 @@
       var wholeHours = hours.toHours(hours.toWholeDays(member.accrued.vacation));
       var amount = findAmount(member.serviceYears);
       var cashable = wholeHours <= amount ? wholeHours : amount;
+      var diff = member.accrued.vacation - cashable;
 
       return {
         accrued: member.accrued.vacation,
         cashable: cashable,
-        diff: member.accrued.vacation - cashable
+        noncashable: diff,
+        config: {
+          heading: "Vacation",
+          id: "vacation",
+          noncashable: {
+            show: diff > 0,
+            type: "bank"
+          }
+        }
       };
     }
 

@@ -27,7 +27,6 @@ describe("Members", function() {
     it("should have 0 accrued", function() {
       expect(member.accrued.holiday).toBe(0);
       expect(member.accrued.personal).toBe(0);
-      expect(member.accrued.personalBank).toBe(0);
       expect(member.accrued.sick).toBe(0);
       expect(member.accrued.vacation).toBe(0);
     });

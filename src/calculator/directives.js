@@ -3,8 +3,7 @@
 
   angular
     .module("ataCashout.calculator")
-      .directive("cashoutCalculator", cashoutCalculator)
-      .directive("resultsPanel", resultsPanel);
+      .directive("cashoutCalculator", cashoutCalculator);
 
   function cashoutCalculator() {
     return {
@@ -17,15 +16,4 @@
       templateUrl: "calculator/cashoutCalculator.html"
     };
   }
-
-  function resultsPanel() {
-    return {
-      restrict: "E",
-      scope: {
-        result: "="
-      },
-      templateUrl: "calculator/resultsPanel.html"
-    };
-  }
-
 })();

@@ -13,13 +13,21 @@
 
     function evaluate(member) {
       member = members.initialize(member);
-      var cashable = member.accrued.holiday < cashableHours
-                   ? member.accrued.holiday
-                   : cashableHours;
+      var cashable = Math.min(member.accrued.holiday, cashableHours);
+      var diff = member.accrued.holiday - cashable;
+
       return {
         accrued: member.accrued.holiday,
         cashable: cashable,
-        diff: member.accrued.holiday - cashable
+        noncashable: diff,
+        config: {
+          heading: "Holiday / Floating Holiday",
+          id: "holiday",
+          noncashable: {
+            show: diff > 0,
+            type: "loss"
+          }
+        }
       };
     }
   }

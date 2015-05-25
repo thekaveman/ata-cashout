@@ -5,7 +5,13 @@
     .module("ataCashout.sick")
       .factory("SickCashoutAmounts", SickCashoutAmounts)
       .factory("SickCashoutBank", SickCashoutBank)
-      .factory("SickCashout", ["DayHours", "Members", "SickCashoutAmounts", "SickCashoutBank", SickCashoutFactory]);
+      .factory("SickCashout", [
+        "DayHours",
+        "Members",
+        "SickCashoutAmounts",
+        "SickCashoutBank",
+        SickCashoutFactory
+      ]);
 
   function SickCashoutAmounts() {
     //the 'amounts' arrays below
@@ -30,7 +36,7 @@
 
   function SickCashoutFactory(hours, members, amounts, bank) {
     return {
-      evaluate: evaluate
+      evaluate: evaluate,
     };
 
     function evaluate(member) {
@@ -38,10 +44,21 @@
       var cashable = member.accrued.sick < bank.minBalance
                    ? 0
                    : getCashableHours(member.serviceYears, member.used.sick);
+
+      var diff = member.accrued.sick - cashable;
+
       return {
         accrued: member.accrued.sick,
-        cashable: cashable,
-        diff: member.accrued.sick - cashable
+        cashable: Math.min(cashable, member.accrued.sick),
+        noncashable: diff,
+        config: {
+          heading: "Sick",
+          id: "sick",
+          noncashable: {
+            show: diff > 0,
+            type: "bank"
+          }
+        }
       };
     }
 

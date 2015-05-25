@@ -26,6 +26,18 @@ describe("SickCashout", function() {
     expect(result.accrued).toBe(10);
   }));
 
+  describe("member with less than 1 service year", function() {
+    beforeEach(inject(function(SickCashout) {
+      sickCashout = SickCashout;
+    }));
+
+    it("should evaluate to 0 cashable", function() {
+      member.serviceYears = 0;
+      var result = sickCashout.evaluate(member);
+      expect(result.cashable).toBe(0);
+    });
+  });
+
   describe("member with less than bank minBalance", function() {
     beforeEach(inject(function(SickCashout) {
       sickCashout = SickCashout;
@@ -80,7 +92,7 @@ describe("SickCashout", function() {
       inject(function(SickCashout) {
         var result = SickCashout.evaluate(member);
         expect(result.cashable).toBe(6);
-        expect(result.diff).toBe(9);
+        expect(result.noncashable).toBe(9);
       });
     });
   });

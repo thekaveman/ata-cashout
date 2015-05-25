@@ -8,20 +8,19 @@ describe("PersonalCashout", function() {
   beforeEach(function() {
     member = {
       serviceYears: 1,
-      accrued: { personal: 7, personalBank: 10 }
+      accrued: { personal: 7 }
     };
   });
 
   it("should initialize members on evaluation", inject(function(Members, PersonalCashout) {
     spyOn(Members, "initialize").and.callThrough();
-    PersonalCashout.evaluate({});
+    PersonalCashout.evaluate(member);
     expect(Members.initialize).toHaveBeenCalled();
   }));
 
   it("should return member's accrued on evaluation", inject(function(PersonalCashout) {
     var result = PersonalCashout.evaluate(member);
-    expect(result.accrued.personal).toBe(7);
-    expect(result.accrued.personalBank).toBe(10);
+    expect(result.accrued).toBe(7);
   }));
 
   it("should evaluate to 0 cashable when no amount matches", function() {
@@ -61,7 +60,25 @@ describe("PersonalCashout", function() {
     inject(function(PersonalCashout) {
       var result = PersonalCashout.evaluate(member);
       expect(result.cashable).toBe(1);
-      expect(result.carryover).toBe(3);
+      expect(result.noncashable).toBe(3);
+    })
+  });
+
+  it("should evaluate a loss when accrued > cashable + noncashable", function() {
+    module(function($provide) {
+      $provide.value("PersonalCashoutAmounts", [{
+        minYears: Number.MIN_VALUE,
+        maxYears: Number.MAX_VALUE,
+        amounts: {
+          cashable: 1,
+          carryover: 1
+        }
+      }]);
+    });
+
+    inject(function(PersonalCashout) {
+      var result = PersonalCashout.evaluate(member);
+      expect(result.loss).toBe(5);
     })
   });
 });

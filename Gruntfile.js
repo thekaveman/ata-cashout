@@ -8,6 +8,7 @@ module.exports = function(grunt) {
     ],
     styles: [
       "bower_components/bootstrap/dist/css/bootstrap.min.css",
+      "bower_components/fontawesome/css/font-awesome.min.css",
       "bower_components/angular-ui-select/dist/select.min.css"
     ]
   };
@@ -58,10 +59,10 @@ module.exports = function(grunt) {
         dest: "dist/styles/app.css"
       },
       fonts: {
-        expand: true,
-        cwd: "bower_components/bootstrap/dist/fonts/",
-        src: "*.*",
-        dest: "dist/fonts/"
+        files: [
+          { src: "bower_components/bootstrap/fonts/*.*", dest: "dist/fonts" },
+          { src: "bower_components/fontawesome/fonts/*.*", dest: "dist/fonts" }
+        ]
       },
       partials: {
         expand: true,

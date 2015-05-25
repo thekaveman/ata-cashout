@@ -2,6 +2,7 @@
   margin-top: 0;
 }
 
+.panel.result .fa,
 .panel.result .glyphicon {
   font-size: 0.8em;
 }

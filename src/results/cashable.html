@@ -2,7 +2,7 @@
 <p class="lead" ng-if="result.cashable > 0">
     <span class="glyphicon glyphicon-time"></span> <span ng-bind="cashableHours()"></span> hours
     <span class="glyphicon glyphicon-arrow-right"></span>
-    $<span ng-bind="cashableValue()"></span>
+    $<span ng-bind="cashableAmount()"></span>
 </p>
 <p ng-if="result.cashable <= 0" class="text-muted">
   No cashable hours.

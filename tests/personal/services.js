@@ -64,7 +64,7 @@ describe("PersonalCashout", function() {
     })
   });
 
-  it("should evaluate a loss when accrued exceeds cashable and noncashable combined", function() {
+  it("should evaluate a loss when accrued > cashable + noncashable", function() {
     module(function($provide) {
       $provide.value("PersonalCashoutAmounts", [{
         minYears: Number.MIN_VALUE,

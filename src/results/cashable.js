@@ -26,5 +26,9 @@
     $scope.cashableAmount = function() {
       return numberFilter($scope.cashableHours() * $scope.result.member.payRate, 2);
     }
+
+    $scope.show = function() {
+      return $scope.cashableHours() > 0;
+    }
   }
 })();

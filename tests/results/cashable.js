@@ -27,5 +27,19 @@ describe("cashable", function() {
 
       expect(scope.cashableAmount()).toBe('10.00');
     });
+
+    it("should show only when cashableHours > 0", function() {
+      scope.cashableHours = function() {
+        return 5;
+      };
+
+      expect(scope.show()).toBe(true);
+
+      scope.cashableHours = function() {
+        return 0;
+      };
+
+      expect(scope.show()).toBe(false);
+    });
   });
 });

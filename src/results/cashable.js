@@ -18,14 +18,13 @@
   }
 
   function cashableController($scope, numberFilter) {
-    var result = $scope.result;
 
     $scope.cashableHours = function() {
-      return result.cashable;
+      return $scope.result.cashable;
     }
 
     $scope.cashableAmount = function() {
-      return numberFilter($scope.cashableHours() * result.member.payRate, 2);
+      return numberFilter($scope.cashableHours() * $scope.result.member.payRate, 2);
     }
   }
 })();

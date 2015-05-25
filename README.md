@@ -18,6 +18,10 @@ Tests can be run using:
 
     $ karma start karma.config.js
 
-Prepare for deployment with:
+Prepare for deployment (package created in `dist/`) with:
 
     $ grunt dist
+
+Deploy to GitHub using the `grunt-gh-pages` grunt task:
+
+    $ grunt deploy

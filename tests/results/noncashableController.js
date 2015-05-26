@@ -1,12 +1,12 @@
 "use strict";
-describe("noncashableController", function() {
+describe("NoncashableController", function() {
   beforeEach(module("ataCashout.results"));
 
   var scope;
 
   beforeEach(inject(function($rootScope, $controller) {
     scope = $rootScope.$new();
-    $controller("noncashableController", { $scope: scope });
+    $controller("NoncashableController", { $scope: scope });
   }));
 
   describe("maps", function() {
@@ -24,7 +24,7 @@ describe("noncashableController", function() {
     });
 
     beforeEach(inject(function($controller) {
-      $controller("noncashableController", { $scope: scope, noncashableMaps: maps });
+      $controller("NoncashableController", { $scope: scope, NoncashableMaps: maps });
     }));
 
     describe("description", function() {

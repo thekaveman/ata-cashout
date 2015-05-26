@@ -1,12 +1,12 @@
 "use strict";
-describe("cashableController", function() {
+describe("CashableController", function() {
   beforeEach(module("ataCashout.results"));
 
   var scope;
 
   beforeEach(inject(function($rootScope, $controller) {
     scope = $rootScope.$new();
-    $controller("cashableController", { $scope: scope });
+    $controller("CashableController", { $scope: scope });
   }));
 
   it("should calculate cashableAmount from cashableHours and member's payRate", function() {

@@ -4,7 +4,7 @@
   angular
     .module("ataCashout.results")
       .directive("resultPanel", resultPanel)
-      .controller("resultsPanelController", ["$scope", resultPanelController]);
+      .controller("ResultPanelController", ["$scope", ResultPanelController]);
 
   function resultPanel() {
     return {
@@ -12,12 +12,12 @@
       scope: {
         result: "=",
       },
-      controller: "resultsPanelController",
+      controller: "ResultPanelController",
       templateUrl: "results/resultPanel.html"
     };
   }
 
-  function resultPanelController($scope) {
+  function ResultPanelController($scope) {
     $scope.cols = {
       cashable: {
         class: function() { return "col-md-" + $scope.cols.cashable.number(); },

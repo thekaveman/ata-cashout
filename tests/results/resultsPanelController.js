@@ -1,12 +1,12 @@
 "use strict";
-describe("resultsPanelController", function() {
+describe("ResultPanelController", function() {
   beforeEach(module("ataCashout.results"));
 
   var scope;
 
   beforeEach(inject(function($rootScope, $controller) {
     scope = $rootScope.$new();
-    $controller("resultsPanelController", { $scope: scope });
+    $controller("ResultPanelController", { $scope: scope });
   }));
 
   describe("when result has no noncashable hours", function() {

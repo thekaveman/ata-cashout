@@ -4,8 +4,8 @@
   angular
     .module("ataCashout.results")
       .directive("noncashable", noncashable)
-      .controller("noncashableController", ["$scope", "numberFilter", "noncashableMaps", noncashableController])
-      .factory("noncashableMaps", noncashableMaps);
+      .controller("NoncashableController", ["$scope", "numberFilter", "NoncashableMaps", NoncashableController])
+      .factory("NoncashableMaps", NoncashableMaps);
 
   function noncashable() {
     return {
@@ -18,7 +18,7 @@
     };
   }
 
-  function noncashableController($scope, numberFilter, maps) {
+  function NoncashableController($scope, numberFilter, maps) {
     $scope.description = function(type) {
       type = type || $scope.result.config.noncashable.type;
       return maps.descriptions.hasOwnProperty(type)
@@ -67,7 +67,7 @@
     };
   }
 
-  function noncashableMaps() {
+  function NoncashableMaps() {
     return {
       descriptions: {
         bank: "banked at end of fiscal year",

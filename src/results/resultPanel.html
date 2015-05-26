@@ -4,10 +4,10 @@
   </div>
   <div class="panel-body">
     <div class="row">
-      <div class="{{cashableCols}}">
+      <div ng-class="cols.cashable.class()">
         <cashable result="result" />
       </div>
-      <div class="{{noncashableCols}}">
+      <div ng-class="cols.noncashable.class()">
         <noncashable result="result" />
       </div>
     </div>

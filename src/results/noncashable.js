@@ -4,8 +4,8 @@
   angular
     .module("ataCashout.results")
       .directive("noncashable", noncashable)
-      .controller("noncashableController", ["$scope", "numberFilter", "noncashableMaps", noncashableController])
-      .factory("noncashableMaps", noncashableMaps);
+      .controller("NoncashableController", ["$scope", "numberFilter", "NoncashableMaps", NoncashableController])
+      .factory("NoncashableMaps", NoncashableMaps);
 
   function noncashable() {
     return {
@@ -18,42 +18,39 @@
     };
   }
 
-  function noncashableController($scope, numberFilter, maps) {
-    var result = $scope.result,
-        member = result.member;
-
-    $scope.icon = function(type) {
-      type = type || result.config.noncashable.type;
-      return maps.icons.hasOwnProperty(type)
-             ? ["glyphicon", "glyphicon-" + maps.icons[type]]
-             : null;
-    };
-
+  function NoncashableController($scope, numberFilter, maps) {
     $scope.description = function(type) {
-      type = type || result.config.noncashable.type;
+      type = type || $scope.result.config.noncashable.type;
       return maps.descriptions.hasOwnProperty(type)
              ? maps.descriptions[type]
              : null;
     };
 
+    $scope.icon = function(type) {
+      type = type || $scope.result.config.noncashable.type;
+      return maps.icons.hasOwnProperty(type)
+             ? ["glyphicon", "glyphicon-" + maps.icons[type]]
+             : null;
+    };
+
     $scope.hours = {
+      loss: function() {
+        return $scope.result.loss || 0;
+      },
       maxCarryover: function() {
         return $scope.hours.noncashable();
       },
       noncashable: function() {
-        return result.noncashable;
-      },
-      loss: function() {
-        return result.loss || 0;
+        return $scope.result.noncashable;
       }
     };
 
     $scope.amounts = {
       noncashable: function() {
-        return numberFilter($scope.hours.noncashable() * member.payRate, 2);
+        return numberFilter($scope.hours.noncashable() * $scope.result.member.payRate, 2);
       },
       loss: function() {
-        return numberFilter($scope.hours.loss() * member.payRate, 2);
+        return numberFilter($scope.hours.loss() * $scope.result.member.payRate, 2);
       }
     };
 
@@ -70,16 +67,16 @@
     };
   }
 
-  function noncashableMaps() {
+  function NoncashableMaps() {
     return {
-      icons: {
-        bank: "piggy-bank",
-        loss: "exclamation-sign"
-      },
       descriptions: {
         bank: "banked at end of fiscal year",
         loss: "lost at end of fiscal year"
       },
+      icons: {
+        bank: "piggy-bank",
+        loss: "exclamation-sign"
+      }
     };
   }
 })();

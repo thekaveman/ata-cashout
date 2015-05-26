@@ -3,7 +3,8 @@
 
   angular
     .module("ataCashout.results")
-      .directive("resultPanel", resultPanel);
+      .directive("resultPanel", resultPanel)
+      .controller("ResultPanelController", ["$scope", ResultPanelController]);
 
   function resultPanel() {
     return {
@@ -11,13 +12,21 @@
       scope: {
         result: "=",
       },
-      link: function(scope, element, attrs) {
-        var cashableCols = scope.result.noncashable > 0 ? 5 : 8;
-        var noncashableCols = 12 - cashableCols;
-        scope.cashableCols = "col-md-" + cashableCols;
-        scope.noncashableCols = noncashableCols > 0 ? "col-md-" + noncashableCols : null;
-      },
+      controller: "ResultPanelController",
       templateUrl: "results/resultPanel.html"
+    };
+  }
+
+  function ResultPanelController($scope) {
+    $scope.cols = {
+      cashable: {
+        class: function() { return "col-md-" + $scope.cols.cashable.number(); },
+        number: function() { return $scope.result.noncashable > 0 ? 5 : 8; }
+      },
+      noncashable: {
+        class: function() { return $scope.cols.noncashable.number() > 0 ? "col-md-" + $scope.cols.noncashable.number() : null; },
+        number: function() { return $scope.result.noncashable > 0 ? 12 - $scope.cols.cashable.number() : 0; }
+      }
     };
   }
 })();

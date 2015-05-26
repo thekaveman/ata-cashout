@@ -59,9 +59,12 @@ module.exports = function(grunt) {
         dest: "dist/styles/app.css"
       },
       fonts: {
+        options: {
+          flatten: true
+        },
         files: [
-          { src: "bower_components/bootstrap/fonts/*.*", dest: "dist/fonts" },
-          { src: "bower_components/fontawesome/fonts/*.*", dest: "dist/fonts" }
+          { expand: true, src: "bower_components/bootstrap/fonts/*.*", dest: "dist/fonts/", flatten: true },
+          { expand: true, src: "bower_components/fontawesome/fonts/*.*", dest: "dist/fonts/", flatten: true }
         ]
       },
       partials: {

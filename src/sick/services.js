@@ -54,6 +54,11 @@
         config: {
           heading: "Sick",
           id: "sick",
+          cashable: {
+            show: member.accrued.sick < bank.minBalance,
+            message: "Minimum balace of " + bank.minBalance + " hours to cash out.",
+            type: "info"
+          },
           noncashable: {
             show: diff > 0,
             type: "bank"

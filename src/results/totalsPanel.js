@@ -10,7 +10,8 @@
     return {
       restrict: "E",
       scope: {
-        results: "=",
+        member: "=",
+        totals: "=",
       },
       controller: "TotalsPanelController",
       templateUrl: "results/totalsPanel.html"
@@ -20,15 +21,17 @@
   function TotalsPanelController($scope) {
     $scope.hours = {
       cashable: function() {
-        if($scope.results && $scope.results.length > 0) {
-          return $scope.results.reduce(function(prev, curr) {
-            if(curr.cashable) {
-              prev += curr.cashable;
-            }
-          }, 0);
+        if($scope.totals && $scope.totals.cashable) {
+          return $scope.totals.cashable;
         }
         return 0;
       }
     };
+
+    $scope.amounts = {
+      cashable: function() {
+        return $scope.hours.cashable() * $scope.member.payRate;
+      }
+    }
   }
 })();

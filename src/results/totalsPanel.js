@@ -20,11 +20,14 @@
   function TotalsPanelController($scope) {
     $scope.hours = {
       cashable: function() {
-        return $scope.results.reduce(function(prev, curr) {
-          if(curr.cashable) {
-            prev += curr.cashable;
-          }
-        }, 0);
+        if($scope.results && $scope.results.length > 0) {
+          return $scope.results.reduce(function(prev, curr) {
+            if(curr.cashable) {
+              prev += curr.cashable;
+            }
+          }, 0);
+        }
+        return 0;
       }
     };
   }

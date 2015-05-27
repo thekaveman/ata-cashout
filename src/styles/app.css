@@ -1,5 +1,6 @@
-.panel.result h3 {
+.panel.result h2 {
   margin-top: 0;
+  font-size: 1.4em;
 }
 
 .panel.result .fa,

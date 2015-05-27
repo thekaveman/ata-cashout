@@ -8,11 +8,6 @@
   function cashoutCalculator() {
     return {
       restrict: "E",
-      scope: {
-        jobs: "=",
-        member: "=",
-        result: "="
-      },
       templateUrl: "calculator/cashoutCalculator.html"
     };
   }

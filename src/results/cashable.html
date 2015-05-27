@@ -1,9 +1,11 @@
 <h2>Cashable</h2>
-<p class="lead" ng-if="show()">
-    <span class="fa fa-fw fa-clock-o"></span> <span ng-bind="cashableHours()"></span> hours
-    <span class="fa fa-fw fa-arrow-right"></span>
-    $<span ng-bind="cashableAmount()"></span>
-</p>
-<p ng-if="!show()" class="text-muted">
+<div class="well" ng-if="show.hours()">
+  <span class="fa fa-fw fa-clock-o"></span> <span ng-bind="cashableHours()"></span> hours
+  <span class="fa fa-fw fa-arrow-right"></span>
+  $<span ng-bind="cashableAmount()"></span>
+</div>
+<p ng-if="!show.hours()" class="text-muted">
   No cashable hours.
+</p>
+<p ng-if="show.message()" ng-bind="message()" class="text-muted">
 </p>

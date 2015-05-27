@@ -27,8 +27,19 @@
       return numberFilter($scope.cashableHours() * $scope.result.member.payRate, 2);
     }
 
-    $scope.show = function() {
-      return $scope.cashableHours() > 0;
-    }
+    $scope.show = {
+      hours: function() {
+        return $scope.cashableHours() > 0;
+      },
+      message: function() {
+        var config = $scope.result.config;
+        return config.cashable ? config.cashable.show : false;
+      }
+    };
+
+    $scope.message = function() {
+      var config = $scope.result.config;
+      return config.cashable ? config.cashable.message : null;
+    };
   }
 })();

@@ -39,16 +39,22 @@
 
       return {
         accrued: member.accrued.personal,
+        banked: noncashable,
         cashable: cashable,
-        loss: loss,
-        noncashable: noncashable,
-        config: {
+        lost: loss,
+        notes: {
+          cashable: [{
+            show: member.accrued.personal >= result.cashable,
+            text: "Maximum "+result.cashable+" cashable Personal Leave hours",
+          }],
+          banked: [{
+            show: loss > 0,
+            text: "Maximum "+result.carryover+" Personal Leave hours carryover"
+          }]
+        },
+        panel: {
           heading: "Personal Leave",
-          id: "personal",
-          noncashable: {
-            show: true,
-            type: "bank"
-          }
+          id: "personal"
         }
       };
     }

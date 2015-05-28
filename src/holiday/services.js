@@ -19,18 +19,16 @@
       return {
         accrued: member.accrued.holiday,
         cashable: cashable,
-        noncashable: diff,
-        config: {
+        lost: diff,
+        notes: {
+          cashable: [{
+            show: member.accrued.holiday >= cashableHours,
+            text: "Maximum " + cashableHours + " Holiday / Floating Holiday hours are cashable"
+          }]
+        },
+        panel: {
           heading: "Holiday / Floating Holiday",
           id: "holiday",
-          cashable: {
-            show: member.accrued.holiday > cashableHours,
-            message: "Maximum " + cashableHours + " Holiday / Floating Holiday hours are cashable"
-          },
-          noncashable: {
-            show: diff > 0,
-            type: "loss"
-          }
         }
       };
     }

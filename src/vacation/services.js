@@ -58,18 +58,19 @@
       return {
         accrued: member.accrued.vacation,
         cashable: cashable,
-        noncashable: diff,
-        config: {
+        banked: diff,
+        notes: {
+          cashable: [{
+            show: member.accrued.vacation > amount,
+            text: "Maximum "+amount+" cashable Vacation hours",
+          },{
+            show: cashable > 0,
+            text: "Elect by "+deadline+" for cashout on or after "+paydate,
+          }]
+        },
+        panel: {
           heading: "Vacation",
           id: "vacation",
-          cashable: {
-            show: cashable > 0,
-            message: "Elect by "+deadline+" for cashout on or after "+paydate,
-          },
-          noncashable: {
-            show: diff > 0,
-            type: "bank"
-          }
         }
       };
     }

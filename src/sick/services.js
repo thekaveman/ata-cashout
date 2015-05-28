@@ -50,19 +50,22 @@
       return {
         accrued: member.accrued.sick,
         cashable: Math.min(cashable, member.accrued.sick),
-        noncashable: diff,
-        config: {
+        banked: diff,
+        notes: {
+          cashable: [{
+            show: member.accrued.sick < bank.minBalance,
+            text: "Minimum "+bank.minBalance+" hour balance to cash out.",
+          },{
+            show: member.serviceYears > 0 && member.accrued.sick >= bank.minBalance && member.accrued.sick >= cashable,
+            text: "Maximum "+cashable+ " cashable Sick hours",
+          },{
+            show: member.serviceYears < minYears(),
+            text: "Must have at least "+minYears()+" service year"
+          }]
+        },
+        panel: {
           heading: "Sick",
           id: "sick",
-          cashable: {
-            show: member.accrued.sick < bank.minBalance,
-            message: "Minimum balace of " + bank.minBalance + " hours to cash out.",
-            type: "info"
-          },
-          noncashable: {
-            show: diff > 0,
-            type: "bank"
-          }
         }
       };
     }
@@ -85,6 +88,15 @@
         return hours.toHours(cashableDays);
       }
       return 0;
+    }
+
+    function minYears() {
+      var min = amounts[0].minYears;
+      for(var i = 1; i < amounts.length; i++) {
+        if(amounts[i].minYears < min)
+          min = amounts[i].minYears;
+      }
+      return min;
     }
   }
 })();

@@ -1,11 +1,12 @@
 <h2>Cashable</h2>
 <div class="well" ng-if="show.hours()">
-  <span class="fa fa-fw fa-clock-o"></span> <span ng-bind="cashableHours()"></span> hours
+  <span class="fa fa-fw fa-clock-o"></span> <span ng-bind="hours()"></span> hours
   <span class="fa fa-fw fa-arrow-right"></span>
-  $<span ng-bind="cashableAmount()"></span>
+  $<span ng-bind="amount()"></span>
 </div>
 <p ng-if="!show.hours()" class="text-muted">
   No cashable hours.
 </p>
-<p ng-if="show.message()" ng-bind="message()" class="text-muted">
-</p>
+<div ng-if="show.notes()">
+  <p class="text-muted" ng-repeat="msg in notes()" ng-bind="msg.text"></p>
+</div>

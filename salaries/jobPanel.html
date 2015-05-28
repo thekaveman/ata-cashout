@@ -1,0 +1,46 @@
+<div class="panel panel-primary">
+  <div class="panel-heading">
+    <strong>About Your Job</strong>
+  </div>
+  <div class="panel-body">
+    <div clas="form">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Title <small>(optional)</small></label>
+            <ui-select theme="bootstrap" ng-model="jobPanel.selectedJob" on-select="jobPanel.onJobSelect($item,$model)">
+              <ui-select-match placeholder="Search job classes">{{$select.selected.Title}}</ui-select-match>
+              <ui-select-choices repeat="job as job in jobPanel.jobs | filter: $select.search track by job.Title">
+                <div ng-bind="job.Title"></div>
+              </ui-select-choices>
+            </ui-select>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Hourly pay rate</label>
+            <div ng-if="!jobPanel.hasSelection()" class="input-group">
+              <div class="input-group-addon">$</div>
+              <input type="number" class="form-control" placeholder="e.g. 14.77" ng-model="member.payRate">
+              <div class="input-group-addon">per hour</div>
+            </div>
+            <ui-select ng-if="jobPanel.hasSelection()" theme="bootstrap" ng-model="member.payRate" search-enabled="false">
+              <ui-select-match placeholder="Select a step">{{ $select.selected.HourlyRate | currency }}</ui-select-match>
+              <ui-select-choices repeat="step.HourlyRate as step in jobPanel.selectedJob.Steps track by step.StepNumber" >
+                <div>{{ step.StepNumber }}. {{ step.HourlyRate | currency }}</div>
+              </ui-select-choices>
+            </ui-select>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label>Years of Service</label>
+            <input type="number" class="form-control" ng-model="member.serviceYears">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

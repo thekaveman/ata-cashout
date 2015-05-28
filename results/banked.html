@@ -1,0 +1,10 @@
+<div ng-if="show.banked()">
+  <h2>Carryover <small>(amount is banked at end of fiscal year)</small></h2>
+  <div class="well">
+    <span class="glyphicon glyphicon-piggy-bank"></span> <span ng-bind="hours()"></span> hours
+    <span class="fa fa-fw fa-arrow-right"></span> $<span ng-bind="amount()"></span>
+  </div>
+  <div class="show.notes()">
+    <p class="text-muted" ng-repeat="msg in notes()" ng-bind="msg.text"></p>
+  </div>
+</div>

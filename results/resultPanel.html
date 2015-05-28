@@ -1,0 +1,16 @@
+<div class="panel panel-success result {{ result.panel.id }}">
+  <div class="panel-heading">
+    <strong>{{ result.panel.heading }}</strong>
+  </div>
+  <div class="panel-body">
+    <div class="row">
+      <div ng-class="cols.cashable.class()">
+        <cashable result="result" />
+      </div>
+      <div ng-class="cols.noncashable.class()">
+        <banked result="result" />
+        <lost result="result" />
+      </div>
+    </div>
+  </div>
+</div>

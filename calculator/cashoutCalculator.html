@@ -1,0 +1,22 @@
+<div class="wrapper" ng-controller="CalculatorController">
+  <div class="row">
+    <div class="col-sm-6">
+      <intro-panel></intro-panel>
+    </div>
+  </div>
+  <div class="row" >
+    <div class="col-sm-6">
+      <job-panel member="member.current"></job-panel>
+      <accruals-panel member="member.current"></accruals-panel>
+      <p>
+        <button class="btn btn-success" ng-click="calc.go()">Go</button>
+        <button class="btn btn-danger" ng-click="calc.reset()">Reset</button>
+      </p>
+    </div>
+    <div class="col-sm-6" ng-if="calc.ready()">
+      <result-panel ng-repeat="result in member.results" result="result"></result-panel>
+      <totals-panel member="member.current" totals="member.totals"></totals-panel>
+    </div>
+</div>
+</div>
+

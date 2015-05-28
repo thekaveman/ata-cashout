@@ -46,9 +46,8 @@
 
     function evaluate(member) {
       member = members.initialize(member);
-      var wholeHours = hours.toHours(hours.toWholeDays(member.accrued.vacation));
       var amount = findAmount(member.serviceYears);
-      var cashable = wholeHours <= amount ? wholeHours : amount;
+      var cashable = Math.min(amount, member.accrued.vacation);
       var diff = member.accrued.vacation - cashable;
 
       var thisYear = new Date().getFullYear();

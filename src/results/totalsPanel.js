@@ -4,7 +4,7 @@
   angular
     .module("ataCashout.results")
       .directive("totalsPanel", totalsPanel)
-      .controller("TotalsPanelController", ["$scope", TotalsPanelController]);
+      .controller("TotalsPanelController", ["$scope", "numberFilter", TotalsPanelController]);
 
   function totalsPanel() {
     return {
@@ -18,7 +18,7 @@
     };
   }
 
-  function TotalsPanelController($scope) {
+  function TotalsPanelController($scope, numberFilter) {
     $scope.hours = {
       cashable: function() {
         if($scope.totals && $scope.totals.cashable) {
@@ -30,7 +30,7 @@
 
     $scope.amounts = {
       cashable: function() {
-        return $scope.hours.cashable() * $scope.member.payRate;
+        return numberFilter($scope.hours.cashable() * $scope.member.payRate, 2);
       }
     }
   }

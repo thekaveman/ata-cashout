@@ -20,12 +20,20 @@
   function ResultPanelController($scope) {
     $scope.cols = {
       cashable: {
-        class: function() { return "col-md-" + $scope.cols.cashable.number(); },
-        number: function() { return $scope.result.noncashable > 0 ? 5 : 8; }
+        class: function() {
+          return "col-md-" + $scope.cols.cashable.number();
+        },
+        number: function() {
+          return $scope.result.banked > 0 || $scope.result.lost > 0 ? 5 : 8;
+        }
       },
       noncashable: {
-        class: function() { return $scope.cols.noncashable.number() > 0 ? "col-md-" + $scope.cols.noncashable.number() : null; },
-        number: function() { return $scope.result.noncashable > 0 ? 12 - $scope.cols.cashable.number() : 0; }
+        class: function() {
+          return $scope.cols.noncashable.number() > 0 ? "col-md-" + $scope.cols.noncashable.number() : null;
+        },
+        number: function() {
+          return $scope.result.banked > 0 || $scope.result.lost > 0 ? 12 - $scope.cols.cashable.number() : 0;
+        }
       }
     };
   }

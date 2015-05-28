@@ -7,7 +7,7 @@
       <div class="row">
         <div class="col-md-6">
           <div class="form-group">
-            <label>Title</label>
+            <label>Title <small>(optional)</small></label>
             <ui-select theme="bootstrap" ng-model="jobPanel.selectedJob" on-select="jobPanel.onJobSelect($item,$model)">
               <ui-select-match placeholder="Search job classes">{{$select.selected.Title}}</ui-select-match>
               <ui-select-choices repeat="job as job in jobPanel.jobs | filter: $select.search track by job.Title">

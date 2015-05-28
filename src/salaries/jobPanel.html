@@ -27,7 +27,7 @@
             <ui-select ng-if="jobPanel.hasSelection()" theme="bootstrap" ng-model="member.payRate" search-enabled="false">
               <ui-select-match placeholder="Select a step">{{ $select.selected.HourlyRate | currency }}</ui-select-match>
               <ui-select-choices repeat="step.HourlyRate as step in jobPanel.selectedJob.Steps track by step.StepNumber" >
-                <div>{{ step.HourlyRate | currency }}</div>
+                <div>{{ step.StepNumber }}. {{ step.HourlyRate | currency }}</div>
               </ui-select-choices>
             </ui-select>
           </div>

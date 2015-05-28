@@ -4,7 +4,7 @@
   angular
     .module("ataCashout.sick")
       .factory("SickCashoutAmounts", SickCashoutAmounts)
-      .factory("SickCashoutBank", SickCashoutBank)
+      .factory("SickCashoutBank", ["DayHours", SickCashoutBank])
       .factory("SickCashout", [
         "DayHours",
         "Members",
@@ -20,17 +20,17 @@
     return [{
       minYears: 1,
       maxYears: 9,
-      amounts: [6,6,6,5,4,3,2,1]
+      days: [6,6,6,5,4,3,2,1]
     },{
       minYears: 10,
       maxYears: Number.MAX_VALUE,
-      amounts: [12,12,12,11,10,9,8,7,6,5,4,3,2,1]
+      days: [12,12,12,11,10,9,8,7,6,5,4,3,2,1]
    }];
   }
 
-  function SickCashoutBank() {
+  function SickCashoutBank(hours) {
     return {
-      minBalance: 12
+      minBalance: hours.toHours(12)
     };
   }
 
@@ -74,17 +74,17 @@
       var cashable = 0;
       for (var i = 0; i < amounts.length; i++) {
         if(amounts[i].minYears <= serviceYears && serviceYears <= amounts[i].maxYears) {
-          cashable = findAmount(amounts[i].amounts, usedHours);
+          cashable = findAmount(amounts[i].days, usedHours);
           break;
         }
       }
       return cashable;
     }
 
-    function findAmount(amounts, usedHours) {
+    function findAmount(days, usedHours) {
       var usedDays = hours.toWholeDays(usedHours);
-      if (usedDays < amounts.length) {
-        var cashableDays = amounts[usedDays];
+      if (usedDays < days.length) {
+        var cashableDays = days[usedDays];
         return hours.toHours(cashableDays);
       }
       return 0;

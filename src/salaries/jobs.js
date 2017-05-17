@@ -62,15 +62,15 @@
     });
 
     //get the list of jobs from github
-    fy.findClosest().then(
-      function(closest) {
-        jobs.getAll(closest.name).then(
-          function(jobClasses) {
-            $scope.jobPanel.jobs = jobClasses;
-          }
-        );
-      }
-    );
+    // fy.findClosest().then(
+    //   function(closest) {
+    //     jobs.getAll(closest.name).then(
+    //       function(jobClasses) {
+    //         $scope.jobPanel.jobs = jobClasses;
+    //       }
+    //     );
+    //   }
+    // );
 
     //determine if a job has been selected
     function hasSelection() {

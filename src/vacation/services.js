@@ -10,14 +10,10 @@
   function VacationCashoutAmounts() {
     return [{
       minYears: 0,
-      maxYears: 9,
+      maxYears: 4,
       amount: 40
     },{
-      minYears: 10,
-      maxYears: 14,
-      amount: 60
-   },{
-      minYears: 15,
+      minYears: 5,
       maxYears: Number.MAX_VALUE,
       amount: 80
    }];

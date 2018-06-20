@@ -4,64 +4,52 @@
   angular
     .module("ataCashout.vacation")
       .factory("VacationCashoutAmounts", VacationCashoutAmounts)
-      .factory("VacationCashoutElection", VacationCashoutElection)
-      .factory("VacationCashout", ["DayHours", "Members", "VacationCashoutAmounts", "VacationCashoutElection", VacationCashoutFactory]);
+      .factory("VacationCashout", ["Members", "VacationCashoutAmounts", VacationCashoutFactory]);
 
   function VacationCashoutAmounts() {
-    return [{
-      minYears: 0,
-      maxYears: 4,
-      amount: 40
-    },{
-      minYears: 5,
-      maxYears: Number.MAX_VALUE,
-      amount: 80
-   }];
-  }
-
-  function VacationCashoutElection() {
-    //0-based month
     return {
-      deadline: {
-        month: 11,
-        day: 31
-      },
-      paydate: {
-        month: 6,
-        day: 1
-      }
+      hours: 48,
+      elections: [{
+        deadline: { month: 11, day: 31 },
+        paydate: { month: 6, day: 1 }
+      },{
+        deadline: { month: 11, day: 31 },
+        paydate: { month: 11, day: 31 }
+      }]
     };
   }
 
-  function VacationCashoutFactory(hours, members, amounts, election) {
+  function VacationCashoutFactory(members, amounts) {
     return {
       evaluate: evaluate
     };
 
-    var formatOpts = { month: "2-digit", day: "2-digit", year: "2-digit" };
-
     function evaluate(member) {
       member = members.initialize(member);
-      var amount = findAmount(member.serviceYears);
-      var cashable = Math.min(amount, member.accrued.vacation);
+
+      var totalCashable = amounts.hours * amounts.elections.length;
+      var cashable = Math.min(totalCashable, member.accrued.vacation);
       var diff = member.accrued.vacation - cashable;
 
       var thisYear = new Date().getFullYear();
-      var deadline = new Date(thisYear, election.deadline.month, election.deadline.day).toLocaleDateString("en-US", formatOpts);
-      var paydate = new Date(thisYear + 1, election.paydate.month, election.paydate.day).toLocaleDateString("en-US", formatOpts);
+
+      var notes = [];
+
+      if (cashable > 0) {
+        amounts.elections.forEach(function(election) {
+          notes.push({
+            show: true,
+            text: "Elect a max of "+amounts.hours+" hours by "+deadline(thisYear, election.deadline)+" for cashout around "+paydate(thisYear, election.paydate)
+          });
+        });
+      }
 
       return {
         accrued: member.accrued.vacation,
         cashable: cashable,
         banked: diff,
         notes: {
-          cashable: [{
-            show: member.accrued.vacation > amount,
-            text: "Maximum "+amount+" cashable Vacation hours",
-          },{
-            show: cashable > 0,
-            text: "Elect by "+deadline+" for cashout on or after "+paydate,
-          }]
+          cashable: notes
         },
         panel: {
           heading: "Vacation",
@@ -69,17 +57,15 @@
         }
       };
     }
+  }
 
-    function findAmount(years) {
-      var filtered = amounts.filter(function(amt) {
-        return amt.minYears <= years && years <= amt.maxYears;
-      });
+  var formatOpts = { month: "2-digit", day: "2-digit", year: "2-digit" };
 
-      if(filtered.length == 1) {
-        return filtered[0].amount;
-      }
+  function deadline(year, target) {
+    return new Date(year, target.month, target.day).toLocaleDateString("en-US", formatOpts);
+  }
 
-      return 0;
-    }
+  function paydate(year, target) {
+    return new Date(year + 1, target.month, target.day).toLocaleDateString("en-US", formatOpts);
   }
 })();
